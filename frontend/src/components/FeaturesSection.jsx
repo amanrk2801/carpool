@@ -1,9 +1,11 @@
 import { IndianRupee , Leaf, Shield } from 'lucide-react';
 
-function FeatureCard({ icon: Icon, title, description, bgColor, iconColor }) {
+function FeatureCard({ title, description, bgColor, iconColor }) {
   return (
     <div className="text-center p-6 rounded-lg border border-gray-200 hover:shadow-lg transition-shadow">
-      <div className={`w-16 h-16 ${bgColor} rounded-full flex items-center justify-center mx-auto mb-4`}>
+      <div
+        className={`w-16 h-16 ${bgColor} rounded-full flex items-center justify-center mx-auto mb-4`}
+      >
         <Icon className={`w-8 h-8 ${iconColor}`} />
       </div>
       <h3 className="text-xl font-semibold text-gray-900 mb-3">{title}</h3>
