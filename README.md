@@ -440,5 +440,4 @@ This project is developed for educational purposes as part of the CDAC course cu
 
 ⭐ **If you find this project helpful, please consider starring the repository!**
 
-**Happy Carpooling! 🚗💚**#   c a r p o o l  
- 
+**Happy Carpooling! 🚗💚**
