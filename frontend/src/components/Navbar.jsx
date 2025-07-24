@@ -31,6 +31,12 @@ function Navbar() {
           </div>
           <div className="flex items-center space-x-4">
             <Link 
+              to="/offer-ride"
+              className="text-green-700 hover:text-green-800 px-4 py-2 text-sm font-medium transition-colors border border-green-600 rounded-lg hover:bg-green-50"
+            >
+              Offer Ride
+            </Link>
+            <Link 
               to="/signin"
               className="text-gray-700 hover:text-blue-600 px-4 py-2 text-sm font-medium transition-colors"
             >
