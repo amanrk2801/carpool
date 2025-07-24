@@ -52,7 +52,7 @@ function HeroSection() {
             Find a Ride
           </Link>
           <Link 
-            to="/offer-ride"
+            to="/join"
             className="bg-green-600 hover:bg-green-700 text-white px-8 py-3 rounded-lg font-semibold flex items-center justify-center gap-2 shadow-md transition-colors"
           >
             <Plus className="w-5 h-5" />
