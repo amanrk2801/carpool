@@ -45,7 +45,7 @@ function HeroSection() {
         
         <div className="flex flex-col sm:flex-row justify-center gap-4 mb-12">
           <Link 
-            to="/join"
+            to="/find-ride"
             className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-semibold flex items-center justify-center gap-2 shadow-md transition-colors"
           >
             <Search className="w-5 h-5" />

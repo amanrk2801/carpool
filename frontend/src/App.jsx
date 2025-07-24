@@ -4,6 +4,7 @@ import LandingPage from './components/LandingPage';
 import SignIn from './components/SignIn';
 import JoinFree from './components/JoinFree';
 import OfferRide from './components/OfferRide';
+import FindRide from './components/FindRide';
 
 /**
  * Main App Component
@@ -26,6 +27,7 @@ function App() {
         
         {/* Ride Pages */}
         <Route path="/offer-ride" element={<OfferRide />} />
+        <Route path="/find-ride" element={<FindRide />} />
         
         {/* Fallback route - redirect to home */}
         <Route path="*" element={<LandingPage />} />
