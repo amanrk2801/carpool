@@ -46,13 +46,13 @@ function Navbar() {
               to="/signin"
               className="text-gray-700 hover:text-blue-600 px-4 py-2 text-sm font-medium transition-colors"
             >
-              Sign In
+              Sign Up
             </Link>
             <Link 
               to="/join"
               className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg text-sm font-medium transition-colors"
             >
-              Join Free
+              Join
             </Link>
           </div>
         </div>
