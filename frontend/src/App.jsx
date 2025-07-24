@@ -5,6 +5,9 @@ import SignIn from './components/SignIn';
 import JoinFree from './components/JoinFree';
 import OfferRide from './components/OfferRide';
 import FindRide from './components/FindRide';
+import HowItWorks from './components/HowItWorks';
+import Safety from './components/Safety';
+import Help from './components/Help';
 
 /**
  * Main App Component
@@ -28,6 +31,11 @@ function App() {
         {/* Ride Pages */}
         <Route path="/offer-ride" element={<OfferRide />} />
         <Route path="/find-ride" element={<FindRide />} />
+        
+        {/* Information Pages */}
+        <Route path="/how-it-works" element={<HowItWorks />} />
+        <Route path="/safety" element={<Safety />} />
+        <Route path="/help" element={<Help />} />
         
         {/* Fallback route - redirect to home */}
         <Route path="*" element={<LandingPage />} />

@@ -1,4 +1,5 @@
 import { Car, Shield, Phone, Mail } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 function Footer() {
   return (
@@ -25,11 +26,11 @@ function Footer() {
           <div>
             <h3 className="text-lg font-bold mb-4">Quick Links</h3>
             <ul className="space-y-2 text-blue-200">
-              <li><a href="#" className="hover:text-green-400">Find a Ride</a></li>
-              <li><a href="#" className="hover:text-green-400">Offer a Ride</a></li>
-              <li><a href="#" className="hover:text-green-400">How It Works</a></li>
-              <li><a href="#" className="hover:text-green-400">Safety</a></li>
-              <li><a href="#" className="hover:text-green-400">Help</a></li>
+              <li><Link to="/find-ride" className="hover:text-green-400">Find a Ride</Link></li>
+              <li><Link to="/offer-ride" className="hover:text-green-400">Offer a Ride</Link></li>
+              <li><Link to="/how-it-works" className="hover:text-green-400">How It Works</Link></li>
+              <li><Link to="/safety" className="hover:text-green-400">Safety</Link></li>
+              <li><Link to="/help" className="hover:text-green-400">Help</Link></li>
             </ul>
           </div>
           
@@ -39,7 +40,7 @@ function Footer() {
             <div className="space-y-3 text-blue-200">
               <div className="flex items-center">
                 <Phone className="w-4 h-4 mr-2 text-green-400" />
-                <span>1-800-CARPOOL</span>
+                <span>1800-0000-1234</span>
               </div>
               <div className="flex items-center">
                 <Mail className="w-4 h-4 mr-2 text-green-400" />

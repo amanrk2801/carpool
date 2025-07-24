@@ -1,6 +1,7 @@
 import { Shield, Car, MapPin, Calendar, Clock, Users, ArrowLeft, Search, Filter, Star, IndianRupee, Navigation } from 'lucide-react';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import Footer from './Footer';
 
 /**
  * FindRide Component
@@ -222,6 +223,12 @@ function FindRide() {
             
             <div className="flex items-center space-x-4">
               <Link 
+                to="/find-ride"
+                className="text-blue-700 hover:text-blue-800 px-4 py-2 text-sm font-medium transition-colors border border-blue-600 rounded-lg hover:bg-blue-50"
+              >
+                Find Ride
+              </Link>
+              <Link 
                 to="/offer-ride"
                 className="text-green-700 hover:text-green-800 text-sm font-medium transition-colors border border-green-600 rounded-lg px-4 py-2 hover:bg-green-50"
               >
@@ -231,13 +238,13 @@ function FindRide() {
                 to="/signin" 
                 className="text-gray-600 hover:text-blue-600 text-sm font-medium transition-colors"
               >
-                Sign In
+                Sign Up
               </Link>
               <Link 
                 to="/join" 
                 className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg text-sm font-medium transition-colors"
               >
-                Join Free
+                Join
               </Link>
             </div>
           </div>
@@ -624,6 +631,8 @@ function FindRide() {
           </div>
         </div>
       </div>
+      
+      <Footer />
     </div>
   );
 }

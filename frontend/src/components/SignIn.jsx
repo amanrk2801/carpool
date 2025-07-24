@@ -1,6 +1,7 @@
 import { Shield, Car, Eye, EyeOff, Lock, Mail, ArrowLeft } from 'lucide-react';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import Footer from './Footer';
 
 /**
  * SignIn Component
@@ -108,14 +109,31 @@ function SignIn() {
               </Link>
             </div>
             
-            {/* Sign Up Link */}
-            <div className="flex items-center">
-              <span className="text-gray-600 text-sm mr-2">Don't have an account?</span>
+            {/* Navigation Links */}
+            <div className="flex items-center space-x-4">
+              <Link 
+                to="/find-ride"
+                className="text-blue-700 hover:text-blue-800 px-4 py-2 text-sm font-medium transition-colors border border-blue-600 rounded-lg hover:bg-blue-50"
+              >
+                Find Ride
+              </Link>
+              <Link 
+                to="/offer-ride"
+                className="text-green-700 hover:text-green-800 px-4 py-2 text-sm font-medium transition-colors border border-green-600 rounded-lg hover:bg-green-50"
+              >
+                Offer Ride
+              </Link>
+              <Link 
+                to="/signin"
+                className="text-gray-700 hover:text-blue-600 px-4 py-2 text-sm font-medium transition-colors"
+              >
+                Sign Up
+              </Link>
               <Link 
                 to="/join" 
                 className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg text-sm font-medium transition-colors"
               >
-                Join Free
+                Join
               </Link>
             </div>
           </div>
@@ -268,6 +286,8 @@ function SignIn() {
           </div>
         </div>
       </div>
+      
+      <Footer />
     </div>
   );
 }
