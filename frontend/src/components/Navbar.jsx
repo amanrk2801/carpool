@@ -1,12 +1,22 @@
 import { Car, Shield } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
+/**
+ * Navbar Component
+ * 
+ * Features:
+ * - Consistent branding across all pages
+ * - Navigation links to Sign In and Join Free pages
+ * - Responsive design
+ * - Hover effects and transitions
+ */
 function Navbar() {
   return (
     <nav className="bg-white shadow-md border-b">
       <div className="max-w-4xl mx-auto px-4">
         <div className="flex justify-between h-16">
           <div className="flex items-center">
-            <div className="flex items-center">
+            <Link to="/" className="flex items-center">
               <div className="bg-blue-600 p-2 rounded-lg mr-3">
                 <Car className="w-6 h-6 text-white" />
               </div>
@@ -17,15 +27,21 @@ function Navbar() {
                   Verified & Safe
                 </div>
               </div>
-            </div>
+            </Link>
           </div>
           <div className="flex items-center space-x-4">
-            <button className="text-gray-700 hover:text-blue-600 px-4 py-2 text-sm font-medium">
+            <Link 
+              to="/signin"
+              className="text-gray-700 hover:text-blue-600 px-4 py-2 text-sm font-medium transition-colors"
+            >
               Sign In
-            </button>
-            <button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg text-sm font-medium">
+            </Link>
+            <Link 
+              to="/join"
+              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg text-sm font-medium transition-colors"
+            >
               Join Free
-            </button>
+            </Link>
           </div>
         </div>
       </div>
