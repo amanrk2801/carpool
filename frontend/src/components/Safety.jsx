@@ -16,7 +16,22 @@ import Footer from './Footer';
 function Safety() {
   // Scroll to top when component mounts
   useEffect(() => {
-    window.scrollTo(0, 0);
+    // Smooth scroll to top
+    const scrollToTop = () => {
+      // Modern browsers with smooth scrolling
+      if (window.scrollTo) {
+        window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+      }
+      // Fallback methods for older browsers
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+    };
+    
+    // Immediate smooth scroll
+    scrollToTop();
+    
+    // Delayed scroll to handle any layout shifts
+    setTimeout(scrollToTop, 100);
   }, []);
 
   const safetyFeatures = [
