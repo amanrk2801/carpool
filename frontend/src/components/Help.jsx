@@ -1,6 +1,6 @@
 import { Shield, Car, Phone, Mail, MessageCircle, HelpCircle, Search, Book, Users, ArrowLeft, CheckCircle, Clock, Star } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Footer from './Footer';
 
 /**
@@ -14,6 +14,11 @@ import Footer from './Footer';
  * - Consistent design with other pages
  */
 function Help() {
+  // Scroll to top when component mounts
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   const [activeCategory, setActiveCategory] = useState('general');
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -33,7 +38,7 @@ function Help() {
       },
       {
         question: "How do I get started?",
-        answer: "Simply sign up with your phone number, verify your identity with a government ID, add your profile photo, and you're ready to find rides or offer rides to others."
+        answer: "Simply Sign In with your phone number, verify your identity with a government ID, add your profile photo, and you're ready to find rides or offer rides to others."
       },
       {
         question: "Is CarpoolConnect available in my city?",
@@ -199,7 +204,7 @@ function Help() {
                 to="/signin"
                 className="text-gray-700 hover:text-blue-600 px-4 py-2 text-sm font-medium transition-colors"
               >
-                Sign Up
+                Sign In
               </Link>
               <Link 
                 to="/join"

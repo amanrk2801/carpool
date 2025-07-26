@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { Shield, Car, UserCheck, Search, CreditCard, MapPin, Clock, Phone, ArrowLeft, Users, Star, CheckCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Footer from './Footer';
@@ -13,11 +14,16 @@ import Footer from './Footer';
  * - Interactive elements and animations
  */
 function HowItWorks() {
+  // Scroll to top when component mounts
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   const riderSteps = [
     {
       step: 1,
       title: "Create Your Profile",
-      description: "Sign up with verified ID and phone number. Add your photo and basic details for a complete profile.",
+      description: "Sign In with verified ID and phone number. Add your photo and basic details for a complete profile.",
       icon: UserCheck,
       details: ["Upload government ID", "Verify phone number", "Add profile photo", "Complete safety training"]
     },
@@ -140,7 +146,7 @@ function HowItWorks() {
                 to="/signin"
                 className="text-gray-700 hover:text-blue-600 px-4 py-2 text-sm font-medium transition-colors"
               >
-                Sign Up
+                Sign In
               </Link>
               <Link 
                 to="/join"

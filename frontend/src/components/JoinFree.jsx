@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import Footer from './Footer';
 
 /**
- * JoinFree Component (Sign Up Page)
+ * JoinFree Component (Sign In Page)
  * 
  * Features:
  * - Consistent design with landing page and signin
@@ -189,10 +189,10 @@ function JoinFree() {
     // Simulate API call
     try {
       await new Promise(resolve => setTimeout(resolve, 2000));
-      console.log('Sign up attempt:', formData);
-      // Handle successful sign up here
+      console.log('Sign In attempt:', formData);
+      // Handle successful Sign In here
     } catch (error) {
-      console.error('Sign up error:', error);
+      console.error('Sign In error:', error);
     } finally {
       setIsLoading(false);
     }
@@ -241,7 +241,7 @@ function JoinFree() {
                 to="/signin"
                 className="text-gray-700 hover:text-blue-600 px-4 py-2 text-sm font-medium transition-colors"
               >
-                Sign Up
+                Sign In
               </Link>
               <Link 
                 to="/join"
@@ -290,7 +290,7 @@ function JoinFree() {
             </div>
           </div>
 
-          {/* Sign Up Form Card */}
+          {/* Sign In Form Card */}
           <div className="bg-white rounded-lg shadow-md p-8 border">
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Name Fields Row */}
@@ -556,7 +556,7 @@ function JoinFree() {
               <p className="text-sm text-gray-600">
                 Already have an account?{' '}
                 <Link to="/signin" className="text-blue-600 hover:text-blue-700 font-medium">
-                  Sign in here
+                  Sign In here
                 </Link>
               </p>
             </div>

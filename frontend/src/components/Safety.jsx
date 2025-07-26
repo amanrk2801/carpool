@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { Shield, Car, UserCheck, Phone, MapPin, Clock, Eye, AlertTriangle, CheckCircle, ArrowLeft, Users, Star } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Footer from './Footer';
@@ -13,6 +14,11 @@ import Footer from './Footer';
  * - Consistent design with other pages
  */
 function Safety() {
+  // Scroll to top when component mounts
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   const safetyFeatures = [
     {
       title: "ID Verification",
@@ -142,7 +148,7 @@ function Safety() {
                 to="/signin"
                 className="text-gray-700 hover:text-blue-600 px-4 py-2 text-sm font-medium transition-colors"
               >
-                Sign Up
+                Sign In
               </Link>
               <Link 
                 to="/join"

@@ -1,5 +1,6 @@
 import "./App.css";
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import ScrollToTop from './components/ScrollToTop';
 import LandingPage from './components/LandingPage';
 import SignIn from './components/SignIn';
 import JoinFree from './components/JoinFree';
@@ -20,6 +21,7 @@ import Help from './components/Help';
 function App() {
   return (
     <Router>
+      <ScrollToTop />
       <Routes>
         {/* Home/Landing Page */}
         <Route path="/" element={<LandingPage />} />
