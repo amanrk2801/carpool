@@ -1,6 +1,6 @@
-import { Shield, Car, MapPin, Calendar, Clock, Users, ArrowLeft, Plus, Minus, IndianRupee } from 'lucide-react';
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Shield, Car, MapPin, Calendar, Clock, Users, ArrowLeft, Plus, Minus, IndianRupee, User } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import Footer from './Footer';
 
 /**
@@ -18,6 +18,26 @@ import Footer from './Footer';
  * - Responsive design
  */
 function OfferRide() {
+  const navigate = useNavigate();
+  
+  // Check if user is authenticated
+  const [user, setUser] = useState(null);
+  
+  // Scroll to top when component mounts
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+  
+  useEffect(() => {
+    const userData = localStorage.getItem('user');
+    if (userData) {
+      setUser(JSON.parse(userData));
+    } else {
+      // Redirect to sign in if not authenticated
+      navigate('/signin');
+    }
+  }, [navigate]);
+  
   // State for form inputs
   const [formData, setFormData] = useState({
     from: '',
@@ -197,18 +217,32 @@ function OfferRide() {
               >
                 Offer Ride
               </Link>
-              <Link 
-                to="/signin" 
-                className="text-gray-600 hover:text-blue-600 text-sm font-medium transition-colors"
-              >
-                Sign Up
-              </Link>
-              <Link 
-                to="/join" 
-                className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg text-sm font-medium transition-colors"
-              >
-                Join
-              </Link>
+              {user ? (
+                <button 
+                  onClick={() => {
+                    localStorage.removeItem('user');
+                    navigate('/signin');
+                  }}
+                  className="text-red-600 hover:text-red-700 text-sm font-medium transition-colors"
+                >
+                  Sign Out
+                </button>
+              ) : (
+                <>
+                  <Link 
+                    to="/signin" 
+                    className="text-gray-600 hover:text-blue-600 text-sm font-medium transition-colors"
+                  >
+                    Sign In
+                  </Link>
+                  <Link 
+                    to="/join" 
+                    className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg text-sm font-medium transition-colors"
+                  >
+                    Join
+                  </Link>
+                </>
+              )}
             </div>
           </div>
         </div>
@@ -232,6 +266,17 @@ function OfferRide() {
             <p className="text-gray-600 text-lg">
               Share your journey and help fellow travelers reach their destination safely
             </p>
+            
+            {/* User Welcome Section */}
+            {user && (
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mt-6 max-w-md mx-auto">
+                <div className="flex items-center justify-center">
+                  <User className="w-5 h-5 text-blue-600 mr-2" />
+                  <span className="text-blue-800 font-medium">Welcome, {user.name}!</span>
+                </div>
+                <p className="text-blue-700 text-sm mt-1">Ready to offer your ride to fellow travelers?</p>
+              </div>
+            )}
           </div>
 
           {/* Main Form Card */}

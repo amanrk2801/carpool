@@ -1,6 +1,6 @@
 import { Shield, Car, Eye, EyeOff, Lock, Mail, ArrowLeft } from 'lucide-react';
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import Footer from './Footer';
 
 /**
@@ -14,7 +14,21 @@ import Footer from './Footer';
  * - Responsive design with Tailwind CSS
  * - Navigation back to home and link to join page
  */
+
 function SignIn() {
+  const navigate = useNavigate();
+  
+  // Scroll to top when component mounts
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+  
+  // Dummy user data for testing
+  const dummyUsers = [
+    { email: 'abc@gmail.com', password: '123456', name: 'abc xyz' },
+    { email: 'driver@gmail.com', password: '123456', name: 'Driver Name' }
+  ];
+  
   // State for form inputs
   const [formData, setFormData] = useState({
     email: '',
@@ -74,13 +88,32 @@ function SignIn() {
     
     setIsLoading(true);
     
-    // Simulate API call
+    // Simulate API call with dummy data validation
     try {
       await new Promise(resolve => setTimeout(resolve, 1500));
-      console.log('Sign in attempt:', formData);
-      // Handle successful sign in here
+      
+      // Check if user exists in dummy data
+      const user = dummyUsers.find(u => 
+        u.email === formData.email && u.password === formData.password
+      );
+      
+      if (user) {
+        // Store user data in localStorage for session
+        localStorage.setItem('user', JSON.stringify(user));
+        console.log('Sign In successful:', user);
+        
+        // Direct navigation based on user type
+        if (user.email === 'driver@gmail.com') {
+          navigate('/offer-ride');
+        } else {
+          navigate('/find-ride');
+        }
+      } else {
+        setErrors({ email: 'Invalid email or password. Try: user@test.com / 123456' });
+      }
     } catch (error) {
-      console.error('Sign in error:', error);
+      console.error('Sign In error:', error);
+      setErrors({ email: 'Sign in failed. Please try again.' });
     } finally {
       setIsLoading(false);
     }
@@ -127,7 +160,7 @@ function SignIn() {
                 to="/signin"
                 className="text-gray-700 hover:text-blue-600 px-4 py-2 text-sm font-medium transition-colors"
               >
-                Sign Up
+                Sign In
               </Link>
               <Link 
                 to="/join" 
@@ -155,9 +188,18 @@ function SignIn() {
             <h1 className="text-3xl font-bold text-gray-800 mb-2">
               Welcome Back
             </h1>
-            <p className="text-gray-600">
-              Sign in to your CarpoolConnect account and travel safely across India
+            <p className="text-gray-600 mb-4">
+              Sign In to your CarpoolConnect account and travel safely across India
             </p>
+            
+            {/* Demo Credentials Info */}
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+              <h3 className="text-sm font-medium text-blue-800 mb-2">Demo Credentials:</h3>
+              <div className="text-xs text-blue-700 space-y-1">
+                <div><strong>Email:</strong> abc@gmail.com | <strong>Password:</strong> 123456</div>
+                <div><strong>Email:</strong> driver@gmail.com | <strong>Password:</strong> 123456</div>
+              </div>
+            </div>
           </div>
 
           {/* Sign In Form Card */}

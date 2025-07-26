@@ -1,6 +1,6 @@
-import { Shield, Car, MapPin, Calendar, Clock, Users, ArrowLeft, Search, Filter, Star, IndianRupee, Navigation } from 'lucide-react';
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Shield, Car, MapPin, Calendar, Clock, Users, ArrowLeft, Search, Filter, Star, IndianRupee, Navigation, User } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import Footer from './Footer';
 
 /**
@@ -16,6 +16,26 @@ import Footer from './Footer';
  * - Responsive design
  */
 function FindRide() {
+  const navigate = useNavigate();
+  
+  // Check if user is authenticated
+  const [user, setUser] = useState(null);
+  
+  // Scroll to top when component mounts
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+  
+  useEffect(() => {
+    const userData = localStorage.getItem('user');
+    if (userData) {
+      setUser(JSON.parse(userData));
+    } else {
+      // Redirect to sign in if not authenticated
+      navigate('/signin');
+    }
+  }, [navigate]);
+  
   // State for search inputs
   const [searchData, setSearchData] = useState({
     from: '',
@@ -184,13 +204,17 @@ function FindRide() {
 
   // Handle ride booking
   const handleBookRide = (rideId) => {
-    // Simulate booking
-    alert(`Booking ride ${rideId}! You will be redirected to payment page.`);
+    // Direct booking action
+    console.log(`Booking ride ${rideId}`);
+    // You can add navigation to payment page here
+    // navigate(`/payment/${rideId}`);
   };
 
   // Handle contact driver
   const handleContactDriver = (driverName) => {
-    alert(`Contacting ${driverName}... Chat window will open.`);
+    // Direct contact action
+    console.log(`Contacting ${driverName}`);
+    // You can open chat window or contact modal here
   };
 
   // Get minimum date (today)
@@ -234,18 +258,32 @@ function FindRide() {
               >
                 Offer Ride
               </Link>
-              <Link 
-                to="/signin" 
-                className="text-gray-600 hover:text-blue-600 text-sm font-medium transition-colors"
-              >
-                Sign Up
-              </Link>
-              <Link 
-                to="/join" 
-                className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg text-sm font-medium transition-colors"
-              >
-                Join
-              </Link>
+              {user ? (
+                <button 
+                  onClick={() => {
+                    localStorage.removeItem('user');
+                    navigate('/signin');
+                  }}
+                  className="text-red-600 hover:text-red-700 text-sm font-medium transition-colors"
+                >
+                  Sign Out
+                </button>
+              ) : (
+                <>
+                  <Link 
+                    to="/signin" 
+                    className="text-gray-600 hover:text-blue-600 text-sm font-medium transition-colors"
+                  >
+                    Sign In
+                  </Link>
+                  <Link 
+                    to="/join" 
+                    className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg text-sm font-medium transition-colors"
+                  >
+                    Join
+                  </Link>
+                </>
+              )}
             </div>
           </div>
         </div>
@@ -267,6 +305,17 @@ function FindRide() {
             <p className="text-gray-600 text-lg">
               Search for available rides and travel with verified drivers across India
             </p>
+            
+            {/* User Welcome Section */}
+            {user && (
+              <div className="bg-green-50 border border-green-200 rounded-lg p-4 mt-6 max-w-md mx-auto">
+                <div className="flex items-center justify-center">
+                  <User className="w-5 h-5 text-green-600 mr-2" />
+                  <span className="text-green-800 font-medium">Welcome, {user.name}!</span>
+                </div>
+                <p className="text-green-700 text-sm mt-1">Let's find you the perfect ride!</p>
+              </div>
+            )}
           </div>
 
           {/* Search Form */}

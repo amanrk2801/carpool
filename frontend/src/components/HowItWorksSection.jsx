@@ -19,7 +19,7 @@ function HowItWorksSection() {
   const steps = [
     {
       step: 1,
-      title: "Sign Up",
+      title: "Sign In",
       description: "Create your profile with ID verification for a secure carpooling experience.",
       icon: UserCheck
     },
