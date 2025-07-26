@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import { Shield, Car, UserCheck, Search, CreditCard, MapPin, Clock, Phone, ArrowLeft, Users, Star, CheckCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Footer from './Footer';
@@ -14,11 +13,6 @@ import Footer from './Footer';
  * - Interactive elements and animations
  */
 function HowItWorks() {
-  // Scroll to top when component mounts
-  useEffect(() => {
-    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
-  }, []);
-
   const riderSteps = [
     {
       step: 1,

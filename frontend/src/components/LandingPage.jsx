@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import Navbar from './Navbar';
 import HeroSection from './HeroSection';
 import FeaturesSection from './FeaturesSection';
@@ -20,11 +19,6 @@ import Footer from './Footer';
  * - Footer with additional links
  */
 function LandingPage() {
-  // Scroll to top when component mounts
-  useEffect(() => {
-    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
-  }, []);
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50">
       <Navbar />

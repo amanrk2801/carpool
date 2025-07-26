@@ -1,5 +1,5 @@
 import { Shield, Car, Eye, EyeOff, Lock, Mail, ArrowLeft } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Footer from './Footer';
 
@@ -17,11 +17,6 @@ import Footer from './Footer';
 
 function SignIn() {
   const navigate = useNavigate();
-  
-  // Scroll to top when component mounts
-  useEffect(() => {
-    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
-  }, []);
   
   // Dummy user data for testing
   const dummyUsers = [

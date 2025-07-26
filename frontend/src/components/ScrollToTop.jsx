@@ -12,14 +12,23 @@ function ScrollToTop() {
   const { pathname } = useLocation();
 
   useEffect(() => {
-    // Smooth scroll to top on route change
+    // Instant scroll to top on route change for better performance
     if (window.scrollTo) {
-      window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
-    } else {
-      // Fallback for older browsers
-      document.documentElement.scrollTop = 0;
-      document.body.scrollTop = 0;
+      window.scrollTo({ 
+        top: 0, 
+        left: 0, 
+        behavior: 'instant'
+      });
     }
+    // Multiple fallback methods for maximum compatibility
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+    
+    // Additional scroll for any scrollable containers
+    const scrollableElements = document.querySelectorAll('[style*="overflow"]');
+    scrollableElements.forEach(element => {
+      element.scrollTop = 0;
+    });
   }, [pathname]);
 
   return null;

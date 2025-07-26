@@ -14,24 +14,29 @@ import Footer from './Footer';
  * - Consistent design with other pages
  */
 function Help() {
-  // Scroll to top when component mounts
+  // Force instant scroll to top when component mounts
   useEffect(() => {
-    // Smooth scroll to top
-    const scrollToTop = () => {
-      // Modern browsers with smooth scrolling
-      if (window.scrollTo) {
-        window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
-      }
-      // Fallback methods for older browsers
+    // Multiple methods to ensure instant scroll to top
+    const forceScrollToTop = () => {
+      window.scrollTo(0, 0);
       document.documentElement.scrollTop = 0;
       document.body.scrollTop = 0;
+      
+      // Force scroll on any potential containers
+      const containers = document.querySelectorAll('div, main, section');
+      containers.forEach(container => {
+        if (container.scrollTop > 0) {
+          container.scrollTop = 0;
+        }
+      });
     };
     
-    // Immediate smooth scroll
-    scrollToTop();
+    // Immediate scroll
+    forceScrollToTop();
     
-    // Delayed scroll to handle any layout shifts
-    setTimeout(scrollToTop, 100);
+    // Ensure scroll after any potential animations
+    setTimeout(forceScrollToTop, 0);
+    setTimeout(forceScrollToTop, 10);
   }, []);
 
   const [activeCategory, setActiveCategory] = useState('general');
