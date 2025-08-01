@@ -389,9 +389,9 @@ When reporting bugs or requesting features:
 | Team Member | GitHub |
 |-------------|--------|
 | Aman Kumbhalwar | [@amanrk2801](https://github.com/amanrk2801) |
-| Bhagirath Manda | [@bhagirathm](https://github.com/bhagirathm) |
-| Rajesh Kumbhar | [@rajeshk](https://github.com/rajeshk) |
-| Om Sirsat | [@omsirsat](https://github.com/omsirsat) |
+| Bhagirath Manda | [@bhagirathm](https://github.com/89245-BhagiRath-Manda) |
+| Rajesh Kumbhar | [@rajeshk](https://github.com/89200-Rajesh) |
+| Om Sirsat | [@omsirsat](https://github.com/89282-Omsirsat) |
 
 ## 📄 License
 
