@@ -66,10 +66,6 @@ function TestimonialsSection() {
     <section className="py-16 bg-white">
       <div className="max-w-4xl mx-auto px-4">
         <div className="text-center mb-12">
-          <div className="inline-flex items-center bg-green-100 text-green-800 px-4 py-2 rounded-full text-sm mb-4">
-            <Shield className="w-4 h-4 mr-2" />
-            Trusted by Users
-          </div>
           <h2 className="text-3xl font-bold text-gray-800 mb-4">
             What Our <span className="text-blue-600">Community Says</span>
           </h2>
@@ -90,16 +86,6 @@ function TestimonialsSection() {
               verified={testimonial.verified}
             />
           ))}
-        </div>
-
-        <div className="text-center">
-          <div className="bg-blue-600 rounded-lg p-6 text-white">
-            <h3 className="text-xl font-bold mb-2">Join Our Community</h3>
-            <p className="text-blue-100 mb-4">Start your safe carpooling journey today.</p>
-            <button className="bg-white text-blue-600 px-6 py-2 rounded-lg font-bold">
-              Get Started
-            </button>
-          </div>
         </div>
       </div>
     </section>

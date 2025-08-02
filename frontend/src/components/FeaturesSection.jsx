@@ -2,12 +2,12 @@ import { IndianRupee, Leaf, Shield } from 'lucide-react';
 
 function FeatureCard({ icon: IconComponent, title, description, bgColor, iconColor }) {
   return (
-    <div className="text-center p-6 rounded-lg border bg-white shadow-sm">
-      <div className={`w-16 h-16 ${bgColor} rounded-lg flex items-center justify-center mx-auto mb-4`}>
-        <IconComponent className={`w-8 h-8 ${iconColor}`} />
+    <div className="text-center p-4 sm:p-6 rounded-lg border bg-white shadow-sm">
+      <div className={`w-12 h-12 sm:w-16 sm:h-16 ${bgColor} rounded-lg flex items-center justify-center mx-auto mb-3 sm:mb-4`}>
+        <IconComponent className={`w-6 h-6 sm:w-8 sm:h-8 ${iconColor}`} />
       </div>
-      <h3 className="text-xl font-bold text-gray-800 mb-3">{title}</h3>
-      <p className="text-gray-600 text-sm">{description}</p>
+      <h3 className="text-lg sm:text-xl font-bold text-gray-800 mb-2 sm:mb-3">{title}</h3>
+      <p className="text-gray-600 text-sm leading-relaxed">{description}</p>
     </div>
   );
 }
@@ -38,18 +38,18 @@ function FeaturesSection() {
   ];
 
   return (
-    <section className="py-16 bg-white">
-      <div className="max-w-4xl mx-auto px-4">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-gray-800 mb-4">
+    <section className="py-12 sm:py-16 bg-white">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-8 sm:mb-12">
+          <h2 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-3 sm:mb-4">
             Why Choose <span className="text-blue-600">CarpoolConnect?</span>
           </h2>
-          <p className="text-gray-600 max-w-2xl mx-auto">
+          <p className="text-gray-600 max-w-2xl mx-auto text-sm sm:text-base px-4">
             Experience safe, affordable, and eco-friendly commuting with verified members.
           </p>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {features.map((feature, index) => (
             <FeatureCard
               key={index}

@@ -1,19 +1,8 @@
-import { Shield, Car, Eye, EyeOff, Lock, Mail, ArrowLeft } from 'lucide-react';
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Shield, Car, Mail, Lock, Eye, EyeOff } from 'lucide-react';
 import Footer from './Footer';
-
-/**
- * SignIn Component
- * 
- * Features:
- * - Maintains the same design consistency as the landing page
- * - Uses the same gradient background and color scheme
- * - Includes form validation states
- * - Password visibility toggle
- * - Responsive design with Tailwind CSS
- * - Navigation back to home and link to join page
- */
+import Navbar from './Navbar';
+import { useNavigate } from 'react-router-dom';
 
 function SignIn() {
   const navigate = useNavigate();
@@ -115,217 +104,106 @@ function SignIn() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50">
-      {/* Navigation Header - Same style as landing page */}
-      <nav className="bg-white shadow-md border-b">
-        <div className="max-w-4xl mx-auto px-4">
-          <div className="flex justify-between h-16">
-            {/* Logo Section - Consistent with landing page */}
-            <div className="flex items-center">
-              <Link to="/" className="flex items-center group">
-                <ArrowLeft className="w-5 h-5 text-gray-600 mr-3 group-hover:text-blue-600 transition-colors" />
-                <div className="bg-blue-600 p-2 rounded-lg mr-3">
-                  <Car className="w-6 h-6 text-white" />
-                </div>
-                <div>
-                  <h1 className="text-xl font-bold text-blue-600">CarpoolConnect</h1>
-                  <div className="flex items-center text-xs text-green-600">
-                    <Shield className="w-3 h-3 mr-1" />
-                    Verified & Safe
-                  </div>
-                </div>
-              </Link>
-            </div>
-            
-            {/* Navigation Links */}
-            <div className="flex items-center space-x-4">
-              <Link 
-                to="/find-ride"
-                className="text-blue-700 hover:text-blue-800 px-4 py-2 text-sm font-medium transition-colors border border-blue-600 rounded-lg hover:bg-blue-50"
-              >
-                Find Ride
-              </Link>
-              <Link 
-                to="/offer-ride"
-                className="text-green-700 hover:text-green-800 px-4 py-2 text-sm font-medium transition-colors border border-green-600 rounded-lg hover:bg-green-50"
-              >
-                Offer Ride
-              </Link>
-              <Link 
-                to="/signin"
-                className="text-gray-700 hover:text-blue-600 px-4 py-2 text-sm font-medium transition-colors"
-              >
-                Sign In
-              </Link>
-              <Link 
-                to="/join" 
-                className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg text-sm font-medium transition-colors"
-              >
-                Join
-              </Link>
-            </div>
-          </div>
-        </div>
-      </nav>
-
-      {/* Main Content Area */}
-      <div className="flex-1 flex items-center justify-center py-12 px-4">
-        <div className="max-w-md w-full">
-          {/* Header Section */}
-          <div className="text-center mb-8">
-            {/* Trust Badge - Similar to landing page */}
-            <div className="inline-flex items-center bg-green-100 text-green-800 px-4 py-2 rounded-full text-sm mb-6">
-              <Shield className="w-4 h-4 mr-2" />
-              Secure Sign In
-            </div>
-            
-            {/* Page Title */}
-            <h1 className="text-3xl font-bold text-gray-800 mb-2">
+    <>
+      <Navbar />
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 flex items-center justify-center p-4 sm:p-6">
+        <div className="w-full max-w-sm sm:max-w-md">
+          {/* Header */}
+          <div className="text-center mb-6 sm:mb-8">
+            <h2 className="text-3xl sm:text-4xl font-bold text-gray-800">
               Welcome Back
-            </h1>
-            <p className="text-gray-600 mb-4">
-              Sign In to your CarpoolConnect account and travel safely across India
-            </p>
-            
-            {/* Demo Credentials Info */}
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
-              <h3 className="text-sm font-medium text-blue-800 mb-2">Demo Credentials:</h3>
-              <div className="text-xs text-blue-700 space-y-1">
-                <div><strong>Email:</strong> abc@gmail.com | <strong>Password:</strong> 123456</div>
-                <div><strong>Email:</strong> driver@gmail.com | <strong>Password:</strong> 123456</div>
+            </h2>
+            <p className="text-gray-600 text-sm sm:text-base">Sign in to your account</p>
+          </div>
+
+          {/* Demo Credentials */}
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4 sm:mb-6 text-center">
+            <h3 className="text-xs sm:text-sm font-medium text-blue-800 mb-2">
+              Demo Credentials:
+            </h3>
+            <div className="text-xs text-blue-700 space-y-1">
+              <div className="break-all">
+                <strong>Email:</strong> abc@gmail.com |{" "}
+                <strong>Password:</strong> 123456
+              </div>
+              <div className="break-all">
+                <strong>Email:</strong> driver@gmail.com |{" "}
+                <strong>Password:</strong> 123456
               </div>
             </div>
           </div>
 
-          {/* Sign In Form Card */}
-          <div className="bg-white rounded-lg shadow-md p-8 border">
-            <form onSubmit={handleSubmit} className="space-y-6">
-              {/* Email Input */}
-              <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                  Email Address
-                </label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <Mail className="h-5 w-5 text-gray-400" />
-                  </div>
-                  <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleInputChange}
-                    className={`w-full pl-10 pr-3 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors ${
-                      errors.email ? 'border-red-500' : 'border-gray-300'
-                    }`}
-                    placeholder="Enter your email address"
-                  />
-                </div>
+          {/* Form */}
+          <div className="bg-white rounded-lg shadow-lg p-4 sm:p-6">
+            <div className="space-y-4">
+              {/* Email */}
+              <div className="relative">
+                <Mail className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
+                <input
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  placeholder="Email Address"
+                  className={`w-full pl-10 pr-3 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base ${
+                    errors.email ? 'border-red-500' : 'border-gray-300'
+                  }`}
+                />
                 {errors.email && (
-                  <p className="mt-1 text-sm text-red-600">{errors.email}</p>
+                  <p className="text-xs sm:text-sm text-red-600 mt-1">{errors.email}</p>
                 )}
               </div>
 
-              {/* Password Input */}
-              <div>
-                <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
-                  Password
-                </label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <Lock className="h-5 w-5 text-gray-400" />
-                  </div>
-                  <input
-                    type={showPassword ? 'text' : 'password'}
-                    id="password"
-                    name="password"
-                    value={formData.password}
-                    onChange={handleInputChange}
-                    className={`w-full pl-10 pr-10 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors ${
-                      errors.password ? 'border-red-500' : 'border-gray-300'
-                    }`}
-                    placeholder="Enter your password"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute inset-y-0 right-0 pr-3 flex items-center"
-                  >
-                    {showPassword ? (
-                      <EyeOff className="h-5 w-5 text-gray-400 hover:text-gray-600" />
-                    ) : (
-                      <Eye className="h-5 w-5 text-gray-400 hover:text-gray-600" />
-                    )}
-                  </button>
-                </div>
-                {errors.password && (
-                  <p className="mt-1 text-sm text-red-600">{errors.password}</p>
-                )}
-              </div>
-
-              {/* Remember Me & Forgot Password */}
-              <div className="flex items-center justify-between">
-                <div className="flex items-center">
-                  <input
-                    id="rememberMe"
-                    name="rememberMe"
-                    type="checkbox"
-                    checked={formData.rememberMe}
-                    onChange={handleInputChange}
-                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                  />
-                  <label htmlFor="rememberMe" className="ml-2 block text-sm text-gray-700">
-                    Remember me
-                  </label>
-                </div>
+              {/* Password */}
+              <div className="relative">
+                <Lock className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
+                <input
+                  type={showPassword ? "text" : "password"}
+                  name="password"
+                  value={formData.password}
+                  onChange={handleInputChange}
+                  placeholder="Password"
+                  className={`w-full pl-10 pr-10 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base ${
+                    errors.password ? 'border-red-500' : 'border-gray-300'
+                  }`}
+                />
                 <button
                   type="button"
-                  className="text-sm text-blue-600 hover:text-blue-700 font-medium"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-3 touch-manipulation"
                 >
-                  Forgot password?
+                  {showPassword ? (
+                    <EyeOff className="h-5 w-5 text-gray-400" />
+                  ) : (
+                    <Eye className="h-5 w-5 text-gray-400" />
+                  )}
                 </button>
+                {errors.password && (
+                  <p className="text-xs sm:text-sm text-red-600 mt-1">{errors.password}</p>
+                )}
               </div>
 
               {/* Submit Button */}
               <button
-                type="submit"
+                onClick={handleSubmit}
                 disabled={isLoading}
-                className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white py-3 px-4 rounded-lg font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white py-3 rounded-lg font-semibold transition-colors text-sm sm:text-base touch-manipulation"
               >
-                {isLoading ? (
-                  <div className="flex items-center justify-center">
-                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-                    Signing In...
-                  </div>
-                ) : (
-                  'Sign In'
-                )}
+                {isLoading ? "Signing In..." : "Sign In"}
               </button>
-            </form>
-
-            {/* Additional Options */}
-            <div className="mt-6 text-center">
-              <p className="text-sm text-gray-600">
-                Don't have an account?{' '}
-                <Link to="/join" className="text-blue-600 hover:text-blue-700 font-medium">
-                  Join CarpoolConnect for free
-                </Link>
-              </p>
             </div>
-          </div>
 
-          {/* Security Notice - Similar to landing page security promise */}
-          <div className="mt-6 bg-white rounded-lg p-4 shadow-sm border">
-            <p className="text-sm text-gray-700 flex items-start">
-              <Shield className="w-4 h-4 mr-2 mt-0.5 text-green-600 flex-shrink-0" />
-              Your data is protected with industry-standard encryption and security measures. Bilkul safe aur secure!
+            <p className="text-center text-xs sm:text-sm text-gray-600 mt-4">
+              Don't have an account?{" "}
+              <a href="/join" className="text-blue-600 underline cursor-pointer">
+                Join for free
+              </a>
             </p>
           </div>
         </div>
       </div>
-      
       <Footer />
-    </div>
+    </>
   );
 }
 
