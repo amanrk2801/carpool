@@ -41,10 +41,6 @@ function HowItWorksSection() {
     <section className="py-16 bg-gray-50">
       <div className="max-w-4xl mx-auto px-4">
         <div className="text-center mb-12">
-          <div className="inline-flex items-center bg-blue-100 text-blue-800 px-4 py-2 rounded-full text-sm mb-4">
-            <Shield className="w-4 h-4 mr-2" />
-            Simple & Safe Process
-          </div>
           <h2 className="text-3xl font-bold text-gray-800 mb-4">
             How <span className="text-blue-600">CarpoolConnect</span> Works
           </h2>
@@ -63,25 +59,6 @@ function HowItWorksSection() {
               icon={stepItem.icon}
             />
           ))}
-        </div>
-        
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="text-center bg-white rounded-lg p-4 shadow-sm">
-            <div className="text-xl font-bold text-blue-600">2 mins</div>
-            <div className="text-sm text-gray-600">Signup Time</div>
-          </div>
-          <div className="text-center bg-white rounded-lg p-4 shadow-sm">
-            <div className="text-xl font-bold text-green-600">100%</div>
-            <div className="text-sm text-gray-600">Verified</div>
-          </div>
-          <div className="text-center bg-white rounded-lg p-4 shadow-sm">
-            <div className="text-xl font-bold text-blue-600">24/7</div>
-            <div className="text-sm text-gray-600">Support</div>
-          </div>
-          <div className="text-center bg-white rounded-lg p-4 shadow-sm">
-            <div className="text-xl font-bold text-green-600">GPS</div>
-            <div className="text-sm text-gray-600">Tracking</div>
-          </div>
         </div>
       </div>
     </section>

@@ -3,26 +3,13 @@ import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import Footer from './Footer';
 
-/**
- * Help Component
- * 
- * Features:
- * - Comprehensive help and support information
- * - FAQ sections for different topics
- * - Contact information and support channels
- * - Searchable help articles
- * - Consistent design with other pages
- */
 function Help() {
-  // Force instant scroll to top when component mounts
   useEffect(() => {
-    // Multiple methods to ensure instant scroll to top
     const forceScrollToTop = () => {
       window.scrollTo(0, 0);
       document.documentElement.scrollTop = 0;
       document.body.scrollTop = 0;
       
-      // Force scroll on any potential containers
       const containers = document.querySelectorAll('div, main, section');
       containers.forEach(container => {
         if (container.scrollTop > 0) {
@@ -30,11 +17,9 @@ function Help() {
         }
       });
     };
-    
-    // Immediate scroll
+
     forceScrollToTop();
     
-    // Ensure scroll after any potential animations
     setTimeout(forceScrollToTop, 0);
     setTimeout(forceScrollToTop, 10);
   }, []);

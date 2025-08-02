@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import ScrollToTop from './components/ScrollToTop';
 import LandingPage from './components/LandingPage';
 import SignIn from './components/SignIn';
-import JoinFree from './components/JoinFree';
+import JoinFree from './components/Signup';
 import OfferRide from './components/OfferRide';
 import FindRide from './components/FindRide';
 import HowItWorks from './components/HowItWorks';
