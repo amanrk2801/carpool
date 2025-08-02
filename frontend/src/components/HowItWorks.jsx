@@ -89,7 +89,6 @@ function HowItWorks() {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50">
       <Navbar/>
 
-      {/* Hero Section */}
       <section className="pt-20 pb-16 bg-blue-50">
         <div className="max-w-4xl mx-auto px-4 text-center">
           
@@ -103,7 +102,6 @@ function HowItWorks() {
         </div>
       </section>
 
-      {/* For Riders Section */}
       <section className="py-16 bg-white">
         <div className="max-w-6xl mx-auto px-4">
           <div className="text-center mb-12">
@@ -132,7 +130,6 @@ function HowItWorks() {
         </div>
       </section>
 
-      {/* For Drivers Section */}
       <section className="py-16 bg-gray-50">
         <div className="max-w-6xl mx-auto px-4">
           <div className="text-center mb-12">
@@ -161,7 +158,6 @@ function HowItWorks() {
         </div>
       </section>
 
-      {/* FAQ Section */}
       <section className="py-16 bg-white">
         <div className="max-w-4xl mx-auto px-4">
           <div className="text-center mb-12">
@@ -189,7 +185,6 @@ function HowItWorks() {
         </div>
       </section>
 
-      {/* CTA Section */}
       <section className="py-16 bg-blue-600">
         <div className="max-w-4xl mx-auto px-4 text-center">
           <h2 className="text-3xl font-bold text-white mb-4">

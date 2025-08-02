@@ -6,8 +6,7 @@ function Footer() {
     <footer className="bg-blue-900 text-white">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-          
-          {/* Company Info */}
+
           <div className="sm:col-span-2 lg:col-span-1">
             <div className="flex items-center mb-4">
               <Car className="w-6 h-6 sm:w-8 sm:h-8 text-green-400 mr-3" />
@@ -18,7 +17,6 @@ function Footer() {
             </p>
           </div>
           
-          {/* Quick Links */}
           <div>
             <h3 className="text-base sm:text-lg font-bold mb-3 sm:mb-4">Quick Links</h3>
             <ul className="space-y-2 text-blue-200 text-sm sm:text-base">
@@ -30,7 +28,6 @@ function Footer() {
             </ul>
           </div>
           
-          {/* Contact */}
           <div>
             <h3 className="text-base sm:text-lg font-bold mb-3 sm:mb-4">Contact Us</h3>
             <div className="space-y-3 text-blue-200 text-sm sm:text-base">

@@ -1,11 +1,7 @@
-/* Custom styles for the carpool landing page */
-
-/* Smooth scrolling */
 html {
   scroll-behavior: smooth;
 }
 
-/* Custom button hover effects */
 .btn-hover {
   transition: all 0.3s ease;
 }
@@ -15,12 +11,10 @@ html {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-/* Custom gradient backgrounds */
 .gradient-bg {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 }
 
-/* Feature card hover effects */
 .feature-card {
   transition: all 0.3s ease;
 }
@@ -30,7 +24,6 @@ html {
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
 }
 
-/* Custom animations */
 @keyframes fadeInUp {
   from {
     opacity: 0;
