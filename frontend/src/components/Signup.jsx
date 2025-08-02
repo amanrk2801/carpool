@@ -9,10 +9,13 @@ import {
   Eye,
   EyeOff,
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 
 function Signup() {
+  const navigate = useNavigate();
+  
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -34,8 +37,19 @@ function Signup() {
   const handleSubmit = () => {
     setIsLoading(true);
     setTimeout(() => {
+      // Create user object and store in localStorage
+      const newUser = {
+        name: `${formData.firstName} ${formData.lastName}`,
+        email: formData.email,
+        phone: formData.phone
+      };
+      localStorage.setItem('user', JSON.stringify(newUser));
+      
       alert("Account created successfully!");
       setIsLoading(false);
+      
+      // Redirect to dashboard after successful signup
+      navigate('/dashboard');
     }, 1500);
   };
 

@@ -22,7 +22,7 @@ function Navbar() {
     navigate("/");
   };
 
-  const isAuthPage = location.pathname === '/offer-ride' || location.pathname === '/find-ride';
+  const isAuthPage = location.pathname === '/offer-ride' || location.pathname === '/find-ride' || location.pathname === '/dashboard' || location.pathname === '/profile';
   const showLogout = user && isAuthPage;
 
   return (
@@ -41,6 +41,14 @@ function Navbar() {
           </div>
           
           <div className="hidden md:flex items-center space-x-4">
+            {user && (
+              <Link 
+                to="/dashboard"
+                className="text-purple-700 hover:text-purple-800 px-4 py-2 text-sm font-medium transition-colors border border-purple-600 rounded-lg hover:bg-purple-50"
+              >
+                Dashboard
+              </Link>
+            )}
             <Link 
               to="/find-ride"
               className="text-blue-700 hover:text-blue-800 px-4 py-2 text-sm font-medium transition-colors border border-blue-600 rounded-lg hover:bg-blue-50"
@@ -98,6 +106,15 @@ function Navbar() {
         {isMenuOpen && (
           <div className="md:hidden border-t border-gray-200 py-4">
             <div className="flex flex-col space-y-3">
+              {user && (
+                <Link 
+                  to="/dashboard"
+                  className="text-purple-700 hover:text-purple-800 px-4 py-2 text-sm font-medium transition-colors border border-purple-600 rounded-lg hover:bg-purple-50 text-center"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Dashboard
+                </Link>
+              )}
               <Link 
                 to="/find-ride"
                 className="text-blue-700 hover:text-blue-800 px-4 py-2 text-sm font-medium transition-colors border border-blue-600 rounded-lg hover:bg-blue-50 text-center"

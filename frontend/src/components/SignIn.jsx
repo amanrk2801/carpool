@@ -8,8 +8,9 @@ function SignIn() {
   const navigate = useNavigate();
   
   const dummyUsers = [
-    { email: 'abc@gmail.com', password: '123456', name: 'abc xyz' },
-    { email: 'driver@gmail.com', password: '123456', name: 'Driver Name' }
+    { email: 'rajesh@gmail.com', password: '123456', name: 'Rajesh Kumar' },
+    { email: 'priya@gmail.com', password: '123456', name: 'Priya Sharma' },
+    { email: 'driver@gmail.com', password: '123456', name: 'Vikash Gupta' }
   ];
   
   const [formData, setFormData] = useState({
@@ -75,13 +76,10 @@ function SignIn() {
         localStorage.setItem('user', JSON.stringify(user));
         console.log('Sign In successful:', user);
         
-        if (user.email === 'driver@gmail.com') {
-          navigate('/offer-ride');
-        } else {
-          navigate('/find-ride');
-        }
+        // Redirect to dashboard after successful login
+        navigate('/dashboard');
       } else {
-        setErrors({ email: 'Invalid email or password. Try: user@test.com / 123456' });
+        setErrors({ email: 'Invalid email or password. Try: rajesh@gmail.com / 123456' });
       }
     } catch (error) {
       console.error('Sign In error:', error);
