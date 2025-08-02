@@ -135,7 +135,7 @@ const Dashboard = () => {
             <span className="font-semibold text-green-600">{ride.price}</span>
           </div>
         </div>
-        <span className={px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(ride.status)}}>
+        <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(ride.status)}`}>
           {ride.status.charAt(0).toUpperCase() + ride.status.slice(1)}
         </span>
       </div>
@@ -203,7 +203,7 @@ const Dashboard = () => {
       </div>
 
       <div className="flex justify-between items-center">
-        <span className={px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(booking.status)}}>
+        <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(booking.status)}`}>
           {booking.status.charAt(0).toUpperCase() + booking.status.slice(1)}
         </span>
         {booking.status === 'pending' && (
@@ -269,7 +269,7 @@ const Dashboard = () => {
               <span className="text-yellow-600 text-2xl font-bold mr-3">₹</span>
               <div className="ml-4">
                 <p className="text-sm font-medium text-gray-600">Earnings</p>
-                <p className="text-2xl font-bold text-gray-900">690</p>
+                <p className="text-2xl font-bold text-gray-900">₹690</p>
               </div>
             </div>
           </div>
