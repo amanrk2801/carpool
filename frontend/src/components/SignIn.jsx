@@ -7,27 +7,22 @@ import { useNavigate } from 'react-router-dom';
 function SignIn() {
   const navigate = useNavigate();
   
-  // Dummy user data for testing
   const dummyUsers = [
     { email: 'abc@gmail.com', password: '123456', name: 'abc xyz' },
     { email: 'driver@gmail.com', password: '123456', name: 'Driver Name' }
   ];
   
-  // State for form inputs
   const [formData, setFormData] = useState({
     email: '',
     password: '',
     rememberMe: false
   });
   
-  // State for password visibility toggle
   const [showPassword, setShowPassword] = useState(false);
   
-  // State for form validation and loading
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
 
-  // Handle input changes
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData(prev => ({
@@ -35,7 +30,6 @@ function SignIn() {
       [name]: type === 'checkbox' ? checked : value
     }));
     
-    // Clear error when user starts typing
     if (errors[name]) {
       setErrors(prev => ({
         ...prev,
@@ -44,7 +38,6 @@ function SignIn() {
     }
   };
 
-  // Form validation
   const validateForm = () => {
     const newErrors = {};
     
@@ -64,7 +57,6 @@ function SignIn() {
     return Object.keys(newErrors).length === 0;
   };
 
-  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     
@@ -72,21 +64,17 @@ function SignIn() {
     
     setIsLoading(true);
     
-    // Simulate API call with dummy data validation
     try {
       await new Promise(resolve => setTimeout(resolve, 1500));
       
-      // Check if user exists in dummy data
       const user = dummyUsers.find(u => 
         u.email === formData.email && u.password === formData.password
       );
       
       if (user) {
-        // Store user data in localStorage for session
         localStorage.setItem('user', JSON.stringify(user));
         console.log('Sign In successful:', user);
         
-        // Direct navigation based on user type
         if (user.email === 'driver@gmail.com') {
           navigate('/offer-ride');
         } else {
@@ -108,7 +96,6 @@ function SignIn() {
       <Navbar />
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 flex items-center justify-center p-4 sm:p-6">
         <div className="w-full max-w-sm sm:max-w-md">
-          {/* Header */}
           <div className="text-center mb-6 sm:mb-8">
             <h2 className="text-3xl sm:text-4xl font-bold text-gray-800">
               Welcome Back
@@ -116,7 +103,6 @@ function SignIn() {
             <p className="text-gray-600 text-sm sm:text-base">Sign in to your account</p>
           </div>
 
-          {/* Demo Credentials */}
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4 sm:mb-6 text-center">
             <h3 className="text-xs sm:text-sm font-medium text-blue-800 mb-2">
               Demo Credentials:
@@ -133,7 +119,6 @@ function SignIn() {
             </div>
           </div>
 
-          {/* Form */}
           <div className="bg-white rounded-lg shadow-lg p-4 sm:p-6">
             <div className="space-y-4">
               {/* Email */}
@@ -154,7 +139,6 @@ function SignIn() {
                 )}
               </div>
 
-              {/* Password */}
               <div className="relative">
                 <Lock className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
                 <input
@@ -183,7 +167,6 @@ function SignIn() {
                 )}
               </div>
 
-              {/* Submit Button */}
               <button
                 onClick={handleSubmit}
                 disabled={isLoading}

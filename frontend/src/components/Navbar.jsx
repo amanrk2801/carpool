@@ -40,7 +40,6 @@ function Navbar() {
             </Link>
           </div>
           
-          {/* Desktop Menu */}
           <div className="hidden md:flex items-center space-x-4">
             <Link 
               to="/find-ride"
@@ -86,7 +85,6 @@ function Navbar() {
             )}
           </div>
 
-          {/* Mobile Menu Button */}
           <div className="md:hidden">
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -97,7 +95,6 @@ function Navbar() {
           </div>
         </div>
 
-        {/* Mobile Menu */}
         {isMenuOpen && (
           <div className="md:hidden border-t border-gray-200 py-4">
             <div className="flex flex-col space-y-3">

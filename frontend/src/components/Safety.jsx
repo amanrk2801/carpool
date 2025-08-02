@@ -26,70 +26,6 @@ function Safety() {
     }
   ];
 
-  const safetyProtocols = [
-    {
-      title: "Pre-Trip Safety",
-      items: [
-        "Verify driver and vehicle details",
-        "Share trip details with family/friends",
-        "Check driver's rating and reviews",
-        "Confirm pickup location and time"
-      ]
-    },
-    {
-      title: "During the Trip",
-      items: [
-        "Use GPS tracking feature",
-        "Keep emergency contacts handy",
-        "Stay alert and aware",
-        "Use in-app messaging only"
-      ]
-    },
-    {
-      title: "Emergency Procedures",
-      items: [
-        "Press SOS button for immediate help",
-        "Call our 24/7 helpline: 1800-0000-1234",
-        "Share live location with trusted contacts",
-        "Contact local authorities if needed"
-      ]
-    }
-  ];
-
-  const emergencySteps = [
-    {
-      step: 1,
-      title: "Press SOS Button",
-      description: "Instantly alert our safety team and emergency contacts",
-      icon: AlertTriangle
-    },
-    {
-      step: 2,
-      title: "Automatic Location Sharing",
-      description: "Your live location is shared with safety team and emergency contacts",
-      icon: MapPin
-    },
-    {
-      step: 3,
-      title: "Immediate Response",
-      description: "Our team contacts you within 30 seconds and coordinates help",
-      icon: Phone
-    },
-    {
-      step: 4,
-      title: "Continuous Monitoring",
-      description: "We stay with you until you're safe and the situation is resolved",
-      icon: Eye
-    }
-  ];
-
-  const trustIndicators = [
-    { label: "Users Verified", value: "1,00,000+" },
-    { label: "Background Checks", value: "100%" },
-    { label: "Safety Response Time", value: "< 30 sec" },
-    { label: "Incident Resolution", value: "99.9%" }
-  ];
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50">
       <Navbar/>
@@ -108,7 +44,6 @@ function Safety() {
         </div>
       </section>
 
-      {/* Safety Features Section */}
       <section className="py-16 bg-white">
         <div className="max-w-6xl mx-auto px-4">
           <div className="text-center mb-12">
@@ -134,44 +69,6 @@ function Safety() {
         </div>
       </section>
 
-      {/* Emergency Response Section */}
-      <section className="py-16 bg-red-50">
-        <div className="max-w-6xl mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-800 mb-4">
-              <span className="text-red-600">Emergency Response</span> System
-            </h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">
-              Our rapid response system ensures help reaches you within seconds
-            </p>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {emergencySteps.map((step, index) => (
-              <div key={index} className="text-center">
-                <div className="w-16 h-16 bg-red-600 text-white rounded-full flex items-center justify-center mx-auto mb-4 shadow-md">
-                  <step.icon className="w-8 h-8" />
-                </div>
-                <div className="w-8 h-8 bg-gray-800 text-white rounded-full flex items-center justify-center mx-auto mb-4 text-sm font-bold">
-                  {step.step}
-                </div>
-                <h3 className="text-xl font-bold text-gray-800 mb-3">{step.title}</h3>
-                <p className="text-gray-600 text-sm">{step.description}</p>
-              </div>
-            ))}
-          </div>
-          
-          <div className="text-center mt-12">
-            <div className="bg-red-600 text-white px-8 py-4 rounded-lg inline-block shadow-md">
-              <h3 className="text-xl font-bold mb-2">Emergency Helpline</h3>
-              <p className="text-2xl font-bold">1800-0000-1234</p>
-              <p className="text-sm text-red-100">Available 24/7 across India</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Safety Tips Section */}
       <section className="py-16 bg-white">
         <div className="max-w-4xl mx-auto px-4">
           <div className="text-center mb-12">

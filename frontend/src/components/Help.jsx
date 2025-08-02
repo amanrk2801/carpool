@@ -2,6 +2,7 @@ import { Shield, Car, Phone, Mail, MessageCircle, HelpCircle, Search, Book, User
 import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import Footer from './Footer';
+import Navbar from './Navbar';
 
 function Help() {
   useEffect(() => {
@@ -128,44 +129,6 @@ function Help() {
     ]
   };
 
-  const supportChannels = [
-    {
-      title: "24/7 Phone Support",
-      description: "Call us anytime for immediate assistance",
-      contact: "1800-0000-1234",
-      icon: Phone,
-      availability: "Available 24/7"
-    },
-    {
-      title: "Email Support",
-      description: "Send us your queries and we'll respond within 4 hours",
-      contact: "support@carpoolconnect.com",
-      icon: Mail,
-      availability: "Response within 4 hours"
-    },
-    {
-      title: "In-App Chat",
-      description: "Chat with our support team directly from the app",
-      contact: "Available in the app",
-      icon: MessageCircle,
-      availability: "Real-time support"
-    },
-    {
-      title: "Emergency Helpline",
-      description: "For safety emergencies during your ride",
-      contact: "1800-0000-1234",
-      icon: Shield,
-      availability: "Emergency only"
-    }
-  ];
-
-  const quickActions = [
-    { title: "Find a Ride", description: "Search for available rides", link: "/find-ride", icon: Search },
-    { title: "Offer a Ride", description: "Post your ride for others", link: "/offer-ride", icon: Car },
-    { title: "Safety Guidelines", description: "Learn about our safety measures", link: "/safety", icon: Shield },
-    { title: "How It Works", description: "Understand our process", link: "/how-it-works", icon: Book }
-  ];
-
   const filteredFaqs = faqs[activeCategory].filter(faq =>
     faq.question.toLowerCase().includes(searchQuery.toLowerCase()) ||
     faq.answer.toLowerCase().includes(searchQuery.toLowerCase())
@@ -173,62 +136,11 @@ function Help() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50">
-      {/* Navigation Header */}
-      <nav className="bg-white shadow-md border-b">
-        <div className="max-w-4xl mx-auto px-4">
-          <div className="flex justify-between h-16">
-            <div className="flex items-center">
-              <Link to="/" className="flex items-center group">
-                <ArrowLeft className="w-5 h-5 text-gray-600 mr-3 group-hover:text-blue-600 transition-colors" />
-                <div className="bg-blue-600 p-2 rounded-lg mr-3">
-                  <Car className="w-6 h-6 text-white" />
-                </div>
-                <div>
-                  <h1 className="text-xl font-bold text-blue-600">CarpoolConnect</h1>
-                  <div className="flex items-center text-xs text-green-600">
-                    <Shield className="w-3 h-3 mr-1" />
-                    Verified & Safe
-                  </div>
-                </div>
-              </Link>
-            </div>
-            <div className="flex items-center space-x-4">
-              <Link 
-                to="/find-ride"
-                className="text-blue-700 hover:text-blue-800 px-4 py-2 text-sm font-medium transition-colors border border-blue-600 rounded-lg hover:bg-blue-50"
-              >
-                Find Ride
-              </Link>
-              <Link 
-                to="/offer-ride"
-                className="text-green-700 hover:text-green-800 px-4 py-2 text-sm font-medium transition-colors border border-green-600 rounded-lg hover:bg-green-50"
-              >
-                Offer Ride
-              </Link>
-              <Link 
-                to="/signin"
-                className="text-gray-700 hover:text-blue-600 px-4 py-2 text-sm font-medium transition-colors"
-              >
-                Sign In
-              </Link>
-              <Link 
-                to="/join"
-                className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg text-sm font-medium transition-colors"
-              >
-                Join
-              </Link>
-            </div>
-          </div>
-        </div>
-      </nav>
+      <Navbar/>
 
       {/* Hero Section */}
       <section className="pt-20 pb-16 bg-blue-50">
         <div className="max-w-4xl mx-auto px-4 text-center">
-          <div className="inline-flex items-center bg-green-100 text-green-800 px-4 py-2 rounded-full text-sm mb-6">
-            <HelpCircle className="w-4 h-4 mr-2" />
-            We're Here to Help
-          </div>
           
           <h1 className="text-4xl md:text-5xl font-bold text-gray-800 mb-6">
             Help & <span className="text-blue-600">Support Center</span>
@@ -252,36 +164,6 @@ function Help() {
                 placeholder="Search for help articles, FAQs, or topics..."
               />
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Quick Actions */}
-      <section className="py-16 bg-white">
-        <div className="max-w-6xl mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-800 mb-4">
-              Quick <span className="text-blue-600">Actions</span>
-            </h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">
-              Get started quickly with these common actions
-            </p>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {quickActions.map((action, index) => (
-              <Link 
-                key={index}
-                to={action.link}
-                className="bg-gray-50 hover:bg-blue-50 border border-gray-200 hover:border-blue-300 rounded-lg p-6 text-center transition-colors group"
-              >
-                <div className="w-12 h-12 bg-blue-600 group-hover:bg-blue-700 text-white rounded-full flex items-center justify-center mx-auto mb-4 transition-colors">
-                  <action.icon className="w-6 h-6" />
-                </div>
-                <h3 className="text-lg font-semibold text-gray-800 mb-2">{action.title}</h3>
-                <p className="text-sm text-gray-600">{action.description}</p>
-              </Link>
-            ))}
           </div>
         </div>
       </section>
@@ -342,84 +224,6 @@ function Help() {
           </div>
         </div>
       </section>
-
-      {/* Support Channels */}
-      <section className="py-16 bg-white">
-        <div className="max-w-6xl mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-800 mb-4">
-              Contact <span className="text-green-600">Support</span>
-            </h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">
-              Can't find what you're looking for? Our support team is always ready to help
-            </p>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {supportChannels.map((channel, index) => (
-              <div key={index} className="bg-gray-50 border border-gray-200 rounded-lg p-6 text-center">
-                <div className="w-12 h-12 bg-green-600 text-white rounded-full flex items-center justify-center mx-auto mb-4">
-                  <channel.icon className="w-6 h-6" />
-                </div>
-                <h3 className="text-lg font-semibold text-gray-800 mb-2">{channel.title}</h3>
-                <p className="text-sm text-gray-600 mb-3">{channel.description}</p>
-                <p className="text-blue-600 font-medium mb-2">{channel.contact}</p>
-                <div className="flex items-center justify-center text-xs text-gray-500">
-                  <Clock className="w-3 h-3 mr-1" />
-                  {channel.availability}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Still Need Help Section */}
-      <section className="py-16 bg-blue-600">
-        <div className="max-w-4xl mx-auto px-4 text-center">
-          <h2 className="text-3xl font-bold text-white mb-4">
-            Still Need Help?
-          </h2>
-          <p className="text-blue-100 mb-8 max-w-2xl mx-auto">
-            Our dedicated support team is available 24/7 to assist you with any questions or concerns
-          </p>
-          
-          <div className="flex flex-col sm:flex-row justify-center gap-4 mb-8">
-            <a 
-              href="tel:18000001234"
-              className="bg-white hover:bg-gray-100 text-blue-600 px-8 py-3 rounded-lg font-semibold flex items-center justify-center gap-2 shadow-md transition-colors"
-            >
-              <Phone className="w-5 h-5" />
-              Call 1800-0000-1234
-            </a>
-            <a 
-              href="mailto:support@carpoolconnect.com"
-              className="bg-green-600 hover:bg-green-700 text-white px-8 py-3 rounded-lg font-semibold flex items-center justify-center gap-2 shadow-md transition-colors border-2 border-green-600"
-            >
-              <Mail className="w-5 h-5" />
-              Email Support
-            </a>
-          </div>
-          
-          <div className="flex items-center justify-center text-blue-100 text-sm">
-            <Users className="w-4 h-4 mr-2" />
-            Join 1 lakh+ satisfied users who trust CarpoolConnect
-          </div>
-        </div>
-      </section>
-
-      {/* Security Notice */}
-      <section className="py-8 bg-gray-50">
-        <div className="max-w-4xl mx-auto px-4">
-          <div className="bg-white rounded-lg p-4 shadow-sm border">
-            <p className="text-gray-700 flex items-start text-center">
-              <Shield className="w-5 h-5 mr-2 mt-0.5 text-green-600 flex-shrink-0" />
-              24/7 Support Promise: Our team is always available to help you with any questions or emergencies. Hum hamesha aapke saath hain!
-            </p>
-          </div>
-        </div>
-      </section>
-      
       <Footer />
     </div>
   );
