@@ -3,10 +3,12 @@ import { useNavigate } from "react-router-dom";
 import { MapPin, Calendar, Clock, IndianRupee, Car, Minus, Plus, Info } from "lucide-react";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
+import { useAuth } from "../contexts/AuthContext";
+import { apiService } from "../services/api";
 
 function OfferRide() {
   const navigate = useNavigate();
-  const [user, setUser] = useState(null);
+  const { user } = useAuth();
   const [formData, setFormData] = useState({
     from: "", to: "", departureDate: "", departureTime: "", passengers: 1, pricePerSeat: "",
     carModel: "", carNumber: "", additionalInfo: ""
@@ -15,9 +17,10 @@ function OfferRide() {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    const userData = localStorage.getItem("user");
-    userData ? setUser(JSON.parse(userData)) : navigate("/signin");
-  }, [navigate]);
+    if (!user) {
+      navigate("/signin");
+    }
+  }, [user, navigate]);
 
   const handleInputChange = useCallback((e) => {
     const { name, value, type, checked } = e.target;
@@ -48,11 +51,42 @@ function OfferRide() {
     e.preventDefault();
     if (!validateForm()) return;
     setIsLoading(true);
+
     try {
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      alert("Ride offered successfully! Passengers will be able to book your ride.");
+      const rideData = {
+        from: formData.from,
+        to: formData.to,
+        departureDate: formData.departureDate,
+        departureTime: formData.departureTime,
+        passengers: formData.passengers,
+        pricePerSeat: parseInt(formData.pricePerSeat),
+        carModel: formData.carModel,
+        carNumber: formData.carNumber,
+        additionalInfo: formData.additionalInfo
+      };
+
+      const response = await apiService.offerRide(rideData);
+      
+      if (response.success) {
+        alert("Ride offered successfully! Passengers will be able to book your ride.");
+        navigate('/dashboard');
+      } else {
+        console.error('API response error:', response);
+        // Show detailed validation errors if available
+        let errorMessage = response.message || "Failed to create ride. Please try again.";
+        if (response.data && typeof response.data === 'object') {
+          const validationErrors = Object.entries(response.data)
+            .map(([field, error]) => `${field}: ${error}`)
+            .join('\n');
+          if (validationErrors) {
+            errorMessage += '\n\nValidation errors:\n' + validationErrors;
+          }
+        }
+        alert(errorMessage);
+      }
     } catch (error) {
       console.error("Submit error:", error);
+      alert(`Error: ${error.message || 'An error occurred while creating the ride. Please try again.'}`);
     } finally {
       setIsLoading(false);
     }
@@ -69,7 +103,7 @@ function OfferRide() {
           <p className="text-sm sm:text-base text-gray-600 px-4">Share your journey with fellow travelers and earn money.</p>
           {user && (
             <div className="mt-4 inline-block bg-blue-100 text-blue-800 p-2 sm:p-3 rounded-lg text-sm sm:text-base">
-              Welcome back, <strong>{user.name}</strong>!
+              Welcome back, <strong>{user.firstName || user.name}</strong>!
             </div>
           )}
         </div>
