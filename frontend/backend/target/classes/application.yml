@@ -1,0 +1,99 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /api
+
+spring:
+  application:
+    name: carpool-backend
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/carpool_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:123456789}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+        format_sql: true
+
+  # Redis Configuration (Optional - comment out for local testing)
+  # data:
+  #   redis:
+  #     host: ${REDIS_HOST:localhost}
+  #     port: ${REDIS_PORT:6379}
+  #     password: ${REDIS_PASSWORD:}
+  #     timeout: 2000ms
+
+  security:
+    jwt:
+      secret: ${JWT_SECRET:myVerySecretKeyForJWTTokenGenerationThatNeedsToBeAtLeast512BitsForHS512AlgorithmSoThisIsAVeryLongSecretKeyThatShouldWorkPerfectly}
+      expiration: ${JWT_EXPIRATION:900000} # 15 minutes
+      refresh-expiration: ${JWT_REFRESH_EXPIRATION:604800000} # 7 days
+
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+  # Email Configuration (Optional - comment out for local testing)
+  # mail:
+  #   host: ${SMTP_HOST:smtp.gmail.com}
+  #   port: ${SMTP_PORT:587}
+  #   username: ${SMTP_USERNAME:}
+  #   password: ${SMTP_PASSWORD:}
+  #   properties:
+  #     mail:
+  #       smtp:
+  #         auth: true
+  #         starttls:
+  #           enable: true
+
+# File Storage Configuration (Optional - comment out for local testing)
+# file:
+#   upload-dir: ${FILE_UPLOAD_DIR:./uploads}
+
+# AWS S3 Configuration (Optional - comment out for local testing)
+# aws:
+#   access-key: ${AWS_ACCESS_KEY_ID:}
+#   secret-key: ${AWS_SECRET_ACCESS_KEY:}
+#   s3:
+#     bucket: ${AWS_S3_BUCKET:carpool-bucket}
+#     region: ${AWS_REGION:us-east-1}
+
+# Payment Gateway Configuration (Optional - comment out for local testing)
+# payment:
+#   razorpay:
+#     key-id: ${RAZORPAY_KEY_ID:}
+#     secret: ${RAZORPAY_SECRET:}
+#   stripe:
+#     publishable-key: ${STRIPE_PUBLISHABLE_KEY:}
+#     secret-key: ${STRIPE_SECRET_KEY:}
+
+# SMS Configuration (Optional - comment out for local testing)
+# sms:
+#   api-key: ${SMS_API_KEY:}
+#   sender-id: ${SMS_SENDER_ID:CARPOOL}
+
+# CORS Configuration
+cors:
+  allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:3000,http://localhost:5173}
+  allowed-methods: GET,POST,PUT,DELETE,OPTIONS
+  allowed-headers: "*"
+  allow-credentials: true
+
+# Logging (Simplified for local development)
+logging:
+  level:
+    com.carpool: INFO
+    org.springframework.security: WARN
+    # org.hibernate.SQL: DEBUG  # Uncomment to see SQL queries
+  pattern:
+    console: "%d{HH:mm:ss} %-5level %logger{36} - %msg%n"
+  # file:
+  #   name: logs/carpool.log
