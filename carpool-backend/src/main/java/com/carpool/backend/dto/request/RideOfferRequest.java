@@ -1,4 +1,4 @@
-package com.carpool.dto.request;
+package com.carpool.backend.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
