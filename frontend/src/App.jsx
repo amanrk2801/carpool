@@ -34,8 +34,16 @@ function App() {
           </ProtectedRoute>
         } />
         
-        <Route path="/offer-ride" element={<OfferRide />} />
-        <Route path="/find-ride" element={<FindRide />} />
+        <Route path="/offer-ride" element={
+          <ProtectedRoute>
+            <OfferRide />
+          </ProtectedRoute>
+        } />
+        <Route path="/find-ride" element={
+          <ProtectedRoute>
+            <FindRide />
+          </ProtectedRoute>
+        } />
         
         <Route path="/how-it-works" element={<HowItWorks />} />
         <Route path="/safety" element={<Safety />} />
