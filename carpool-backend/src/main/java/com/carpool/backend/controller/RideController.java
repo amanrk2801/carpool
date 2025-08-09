@@ -1,4 +1,227 @@
 package com.carpool.backend.controller;
 
+
+import com.carpool.dto.request.RideOfferRequest;
+import com.carpool.dto.request.BookingCreateRequest;
+import com.carpool.dto.response.ApiResponse;
+import com.carpool.dto.response.RideResponse;
+import com.carpool.dto.response.BookingResponse;
+import com.carpool.service.RideService;
+import com.carpool.service.BookingService;
+import com.carpool.security.CustomUserDetailsService.CustomUserPrincipal;
+import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.*;
+
+        import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.List;
+
+@RestController
+@RequestMapping("/rides")
+@CrossOrigin(origins = "*")
 public class RideController {
+
+    @Autowired
+    private RideService rideService;
+
+    @Autowired
+    private BookingService bookingService;
+
+    @PostMapping("/offer")
+    public ResponseEntity<ApiResponse<RideResponse>> offerRide(
+            @Valid @RequestBody RideOfferRequest request,
+            Authentication authentication) {
+        try {
+            CustomUserPrincipal userPrincipal = (CustomUserPrincipal) authentication.getPrincipal();
+            RideResponse rideResponse = rideService.offerRide(request, userPrincipal.getUserId());
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body(ApiResponse.success("Ride offered successfully", rideResponse));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(ApiResponse.error("Failed to offer ride", e.getMessage()));
+        }
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<ApiResponse<List<RideResponse>>> searchRides(
+            @RequestParam String from,
+            @RequestParam String to,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+            @RequestParam(defaultValue = "1") Integer passengers,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) LocalTime time,
+            @RequestParam(required = false) BigDecimal maxPrice) {
+        try {
+            // Validate input parameters
+            if (from == null || from.trim().isEmpty()) {
+                throw new RuntimeException("From location is required");
+            }
+            if (to == null || to.trim().isEmpty()) {
+                throw new RuntimeException("To location is required");
+            }
+            if (date == null) {
+                throw new RuntimeException("Departure date is required");
+            }
+            if (passengers == null || passengers <= 0) {
+                throw new RuntimeException("Valid number of passengers is required");
+            }
+
+            // Clean and trim the location parameters
+            String cleanFrom = from.trim().toLowerCase();
+            String cleanTo = to.trim().toLowerCase();
+
+            List<RideResponse> rides = rideService.searchRides(cleanFrom, cleanTo, date, passengers, time, maxPrice);
+            return ResponseEntity.ok(ApiResponse.success("Rides found", rides));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(ApiResponse.error("Search failed", e.getMessage()));
+        }
+    }
+
+    @GetMapping("/my-rides")
+    public ResponseEntity<ApiResponse<List<RideResponse>>> getMyRides(Authentication authentication) {
+        try {
+            CustomUserPrincipal userPrincipal = (CustomUserPrincipal) authentication.getPrincipal();
+            List<RideResponse> rides = rideService.getDriverRides(userPrincipal.getUserId());
+            return ResponseEntity.ok(ApiResponse.success("Rides retrieved", rides));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(ApiResponse.error("Failed to retrieve rides", e.getMessage()));
+        }
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ApiResponse<RideResponse>> getRideDetails(@PathVariable Long id) {
+        try {
+            RideResponse ride = rideService.getRideDetails(id);
+            return ResponseEntity.ok(ApiResponse.success("Ride details retrieved", ride));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(ApiResponse.error("Ride not found", e.getMessage()));
+        }
+    }
+
+    @PutMapping("/{id}/update")
+    public ResponseEntity<ApiResponse<RideResponse>> updateRide(
+            @PathVariable Long id,
+            @Valid @RequestBody RideOfferRequest request,
+            Authentication authentication) {
+        try {
+            CustomUserPrincipal userPrincipal = (CustomUserPrincipal) authentication.getPrincipal();
+            RideResponse ride = rideService.updateRide(id, request, userPrincipal.getUserId());
+            return ResponseEntity.ok(ApiResponse.success("Ride updated successfully", ride));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(ApiResponse.error("Failed to update ride", e.getMessage()));
+        }
+    }
+
+    @DeleteMapping("/{id}/cancel")
+    public ResponseEntity<ApiResponse<String>> cancelRide(
+            @PathVariable Long id,
+            Authentication authentication) {
+        try {
+            CustomUserPrincipal userPrincipal = (CustomUserPrincipal) authentication.getPrincipal();
+            rideService.cancelRide(id, userPrincipal.getUserId());
+            return ResponseEntity.ok(ApiResponse.success("Ride cancelled successfully"));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(ApiResponse.error("Failed to cancel ride", e.getMessage()));
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResponse<String>> deleteRide(
+            @PathVariable Long id,
+            Authentication authentication) {
+        try {
+            CustomUserPrincipal userPrincipal = (CustomUserPrincipal) authentication.getPrincipal();
+            rideService.deleteRide(id, userPrincipal.getUserId());
+            return ResponseEntity.ok(ApiResponse.success("Ride deleted successfully"));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(ApiResponse.error("Failed to delete ride", e.getMessage()));
+        }
+    }
+
+    @PutMapping("/{id}/status")
+    public ResponseEntity<ApiResponse<String>> updateRideStatus(
+            @PathVariable Long id,
+            @RequestParam String status,
+            Authentication authentication) {
+        try {
+            CustomUserPrincipal userPrincipal = (CustomUserPrincipal) authentication.getPrincipal();
+            rideService.updateRideStatus(id, status, userPrincipal.getUserId());
+            return ResponseEntity.ok(ApiResponse.success("Ride status updated successfully"));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(ApiResponse.error("Failed to update ride status", e.getMessage()));
+        }
+    }
+
+    @GetMapping("/filter")
+    public ResponseEntity<ApiResponse<List<RideResponse>>> filterRides(
+            @RequestParam(required = false) String from,
+            @RequestParam(required = false) String to,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+            @RequestParam(required = false) BigDecimal minPrice,
+            @RequestParam(required = false) BigDecimal maxPrice,
+            @RequestParam(required = false) Integer minSeats,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        try {
+            List<RideResponse> rides = rideService.filterRides(from, to, startDate, endDate,
+                    minPrice, maxPrice, minSeats, page, size);
+            return ResponseEntity.ok(ApiResponse.success("Filtered rides retrieved", rides));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(ApiResponse.error("Filter operation failed", e.getMessage()));
+        }
+    }
+
+    @GetMapping("/locations/from")
+    public ResponseEntity<ApiResponse<List<String>>> getFromLocations() {
+        try {
+            List<String> locations = rideService.getDistinctFromLocations();
+            return ResponseEntity.ok(ApiResponse.success("From locations retrieved", locations));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(ApiResponse.error("Failed to retrieve locations", e.getMessage()));
+        }
+    }
+
+    @GetMapping("/locations/to")
+    public ResponseEntity<ApiResponse<List<String>>> getToLocations() {
+        try {
+            List<String> locations = rideService.getDistinctToLocations();
+            return ResponseEntity.ok(ApiResponse.success("To locations retrieved", locations));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(ApiResponse.error("Failed to retrieve locations", e.getMessage()));
+        }
+    }
+
+    @PostMapping("/{id}/book")
+    public ResponseEntity<ApiResponse<BookingResponse>> bookRide(
+            @PathVariable Long id,
+            @Valid @RequestBody BookingCreateRequest request,
+            Authentication authentication) {
+        try {
+            CustomUserPrincipal userPrincipal = (CustomUserPrincipal) authentication.getPrincipal();
+            // Set the ride ID from path variable
+            request.setRideId(id);
+            BookingResponse bookingResponse = bookingService.createBooking(id, request, userPrincipal.getUserId());
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body(ApiResponse.success("Ride booked successfully", bookingResponse));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(ApiResponse.error("Failed to book ride", e.getMessage()));
+        }
+    }
 }
