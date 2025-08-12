@@ -1,8 +1,10 @@
 package com.carpool.backend.service;
 
+
 import java.math.BigDecimal;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -84,6 +86,14 @@ public class BookingService {
         rideRepository.save(ride);
 
         return convertToBookingResponse(booking);
+    }
+    
+
+    public List<BookingResponse> getPassengerBookings(Long passengerId) {
+        List<Booking> bookings = bookingRepository.findByPassengerIdOrderByCreatedAtDesc(passengerId);
+        return bookings.stream()
+                .map(this::convertToBookingResponse)
+                .collect(Collectors.toList());
     }
 
 
