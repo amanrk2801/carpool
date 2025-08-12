@@ -9,15 +9,25 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.carpool.backend.dto.request.BookingCreateRequest;
 import com.carpool.backend.dto.response.ApiResponse;
+import com.carpool.backend.dto.response.BookingResponse;
 import com.carpool.backend.dto.response.RideResponse;
+import com.carpool.backend.security.CustomUserDetailsService.CustomUserPrincipal;
+import com.carpool.backend.service.BookingService;
 import com.carpool.backend.service.RideService;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/rides")
@@ -26,6 +36,9 @@ public class RideController {
 
     @Autowired
     private RideService rideService;
+
+    @Autowired
+    private BookingService bookingService;
 
     @GetMapping("/search")
     public ResponseEntity<ApiResponse<List<RideResponse>>> searchRides(
@@ -56,6 +69,24 @@ public class RideController {
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(ApiResponse.error("Search failed", e.getMessage()));
+        }
+    }
+    
+
+    @PostMapping("/{id}/book")
+    public ResponseEntity<ApiResponse<BookingResponse>> bookRide(
+            @PathVariable Long id,
+            @Valid @RequestBody BookingCreateRequest request,
+            Authentication authentication) {
+        try {
+            CustomUserPrincipal userPrincipal = (CustomUserPrincipal) authentication.getPrincipal();
+            request.setRideId(id);
+            BookingResponse bookingResponse = bookingService.createBooking(id, request, userPrincipal.getUserId());
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body(ApiResponse.success("Ride booked successfully", bookingResponse));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(ApiResponse.error("Failed to book ride", e.getMessage()));
         }
     }
 }
