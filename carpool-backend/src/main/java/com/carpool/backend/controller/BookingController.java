@@ -97,5 +97,20 @@ public class BookingController {
                     .body(ApiResponse.error("Failed to confirm booking", e.getMessage()));
         }
     }
+    
+
+    @PutMapping("/{id}/cancel")
+    public ResponseEntity<ApiResponse<BookingResponse>> cancelBooking(
+            @PathVariable Long id, Authentication authentication) {
+        try {
+            CustomUserPrincipal userPrincipal = (CustomUserPrincipal) authentication.getPrincipal();
+            BookingResponse booking = bookingService.cancelBooking(id, userPrincipal.getUserId());
+            return ResponseEntity.ok(ApiResponse.success("Booking cancelled successfully", booking));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(ApiResponse.error("Failed to cancel booking", e.getMessage()));
+        }
+    }
+
 
 }
