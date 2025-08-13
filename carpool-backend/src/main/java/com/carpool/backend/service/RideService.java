@@ -6,6 +6,7 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.carpool.backend.dto.request.RideOfferRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,6 +27,27 @@ public class RideService {
     @Autowired
     private UserRepository userRepository;
 
+    public RideResponse offerRide(RideOfferRequest request, Long driverId) {
+        User driver = userRepository.findById(driverId)
+                .orElseThrow(() -> new RuntimeException("Driver not found"));
+
+        Ride ride = new Ride();
+        ride.setDriver(driver);
+        ride.setFromLocation(request.getFrom());
+        ride.setToLocation(request.getTo());
+        ride.setDepartureDate(request.getDepartureDate());
+        ride.setDepartureTime(request.getDepartureTime());
+        ride.setTotalSeats(request.getPassengers());
+        ride.setAvailableSeats(request.getPassengers());
+        ride.setPricePerSeat(request.getPricePerSeat());
+        ride.setCarModel(request.getCarModel());
+        ride.setCarNumber(request.getCarNumber());
+        ride.setAdditionalInfo(request.getAdditionalInfo());
+        ride.setInstantBooking(request.isInstantBooking());
+
+        Ride savedRide = rideRepository.save(ride);
+        return mapToRideResponse(savedRide);
+    }
     public List<RideResponse> searchRides(String from, String to, LocalDate date, 
                                         Integer passengers, LocalTime time, BigDecimal maxPrice) {
         List<Ride> rides;
