@@ -2,6 +2,7 @@ package com.carpool.backend.service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -80,6 +81,29 @@ public class RideService {
                 .orElseThrow(() -> new RuntimeException("Ride not found"));
 
         return mapToRideResponse(ride);
+    }
+
+    public void deleteRide(Long rideId, Long driverId) {
+        Ride ride = rideRepository.findById(rideId)
+                .orElseThrow(() -> new RuntimeException("Ride not found"));
+
+        if (!ride.getDriver().getId().equals(driverId)) {
+            throw new RuntimeException("Unauthorized to delete this ride");
+        }
+
+        List<Booking> confirmedBookings = bookingRepository.findByRideIdAndStatus(rideId, Booking.BookingStatus.CONFIRMED);
+        List<Booking> pendingBookings = bookingRepository.findByRideIdAndStatus(rideId, Booking.BookingStatus.PENDING);
+
+        if (!confirmedBookings.isEmpty() || !pendingBookings.isEmpty()) {
+            throw new RuntimeException("Cannot delete ride with active bookings. Please cancel the ride instead.");
+        }
+
+        LocalDateTime rideDateTime = LocalDateTime.of(ride.getDepartureDate(), ride.getDepartureTime());
+        if (rideDateTime.isBefore(LocalDateTime.now())) {
+            throw new RuntimeException("Cannot delete past rides");
+        }
+
+        rideRepository.delete(ride);
     }
 
     public RideResponse updateRide(Long rideId, RideOfferRequest request, Long driverId) {

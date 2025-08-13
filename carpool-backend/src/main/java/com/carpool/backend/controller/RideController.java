@@ -121,6 +121,20 @@ public class RideController {
         }
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResponse<String>> deleteRide(
+            @PathVariable Long id,
+            Authentication authentication) {
+        try {
+            CustomUserPrincipal userPrincipal = (CustomUserPrincipal) authentication.getPrincipal();
+            rideService.deleteRide(id, userPrincipal.getUserId());
+            return ResponseEntity.ok(ApiResponse.success("Ride deleted successfully"));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(ApiResponse.error("Failed to delete ride", e.getMessage()));
+        }
+    }
+
     @GetMapping("/filter")
     public ResponseEntity<ApiResponse<List<RideResponse>>> filterRides(
             @RequestParam(required = false) String from,
