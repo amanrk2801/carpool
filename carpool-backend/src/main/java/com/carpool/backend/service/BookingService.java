@@ -116,7 +116,25 @@ public class BookingService {
         return convertToBookingResponse(booking);
     }
 
+    
+    @Transactional
+    public BookingResponse confirmBooking(Long bookingId, Long driverId) {
+        Booking booking = bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new ResourceNotFoundException("Booking not found with id: " + bookingId));
 
+        if (!booking.getRide().getDriver().getId().equals(driverId)) {
+            throw new UnauthorizedException("Only the driver can confirm bookings");
+        }
+        if (!booking.getStatus().equals(BookingStatus.PENDING)) {
+            throw new ValidationException("Can only confirm pending bookings");
+        }
+        booking.setStatus(BookingStatus.CONFIRMED);
+        booking = bookingRepository.save(booking);
+
+        return convertToBookingResponse(booking);
+    }
+
+    
     private BookingResponse convertToBookingResponse(Booking booking) {
         BookingResponse response = new BookingResponse();
         response.setId(booking.getId());
