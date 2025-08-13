@@ -2,6 +2,8 @@ package com.carpool.backend.service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -101,6 +103,15 @@ public class RatingService {
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
         user.setTotalRides(totalRides);
         userRepository.save(user);
+    }
+    
+    
+    public List<RatingResponse> getRecentUserRatings(Long userId, int limit) {
+        List<Rating> ratings = ratingRepository.findRecentRatingsByUserId(userId);
+        return ratings.stream()
+                .limit(limit)
+                .map(this::convertToResponse)
+                .collect(Collectors.toList());
     }
     
 
