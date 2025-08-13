@@ -135,6 +135,21 @@ public class RideController {
         }
     }
 
+    @PutMapping("/{id}/status")
+    public ResponseEntity<ApiResponse<String>> updateRideStatus(
+            @PathVariable Long id,
+            @RequestParam String status,
+            Authentication authentication) {
+        try {
+            CustomUserPrincipal userPrincipal = (CustomUserPrincipal) authentication.getPrincipal();
+            rideService.updateRideStatus(id, status, userPrincipal.getUserId());
+            return ResponseEntity.ok(ApiResponse.success("Ride status updated successfully"));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(ApiResponse.error("Failed to update ride status", e.getMessage()));
+        }
+    }
+
     @GetMapping("/filter")
     public ResponseEntity<ApiResponse<List<RideResponse>>> filterRides(
             @RequestParam(required = false) String from,
