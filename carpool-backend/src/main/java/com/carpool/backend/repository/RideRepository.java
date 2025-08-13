@@ -11,10 +11,12 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.carpool.backend.entity.Ride;
+import com.carpool.backend.entity.User;
 
 @Repository
 public interface RideRepository extends JpaRepository<Ride, Long> {
 
+    List<Ride> findByDriver(User driver);
 
     @Query("SELECT r FROM Ride r WHERE r.fromLocation LIKE %:from% " +
            "AND r.toLocation LIKE %:to% " +

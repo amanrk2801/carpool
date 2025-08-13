@@ -12,7 +12,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.carpool.backend.dto.response.RideResponse;
 import com.carpool.backend.entity.Ride;
+import com.carpool.backend.entity.User;
 import com.carpool.backend.repository.RideRepository;
+import com.carpool.backend.repository.UserRepository;
 
 @Service
 @Transactional
@@ -20,6 +22,9 @@ public class RideService {
 
     @Autowired
     private RideRepository rideRepository;
+    
+    @Autowired
+    private UserRepository userRepository;
 
     public List<RideResponse> searchRides(String from, String to, LocalDate date, 
                                         Integer passengers, LocalTime time, BigDecimal maxPrice) {
@@ -60,6 +65,17 @@ public class RideService {
                 .filter(ride -> minSeats == null || ride.getAvailableSeats() >= minSeats)
                 .skip(page * size)
                 .limit(size)
+                .map(this::mapToRideResponse)
+                .collect(Collectors.toList());
+    }
+
+
+    public List<RideResponse> getDriverRides(Long driverId) {
+        User driver = userRepository.findById(driverId)
+                .orElseThrow(() -> new RuntimeException("Driver not found"));
+
+        List<Ride> rides = rideRepository.findByDriver(driver);
+        return rides.stream()
                 .map(this::mapToRideResponse)
                 .collect(Collectors.toList());
     }
