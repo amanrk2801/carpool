@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
+import com.carpool.backend.dto.request.RideOfferRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -40,6 +41,21 @@ public class RideController {
     @Autowired
     private BookingService bookingService;
 
+    @PostMapping("/offer")
+    public ResponseEntity<ApiResponse<RideResponse>> offerRide(
+            @Valid @RequestBody RideOfferRequest request,
+            Authentication authentication) {
+        try {
+            CustomUserPrincipal userPrincipal = (CustomUserPrincipal) authentication.getPrincipal();
+            RideResponse rideResponse = rideService.offerRide(request, userPrincipal.getUserId());
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body(ApiResponse.success("Ride offered successfully", rideResponse));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(ApiResponse.error("Failed to offer ride", e.getMessage()));
+        }
+    }
+
     @GetMapping("/search")
     public ResponseEntity<ApiResponse<List<RideResponse>>> searchRides(
             @RequestParam String from,
@@ -71,8 +87,6 @@ public class RideController {
                     .body(ApiResponse.error("Search failed", e.getMessage()));
         }
     }
-    
-
     @GetMapping("/filter")
     public ResponseEntity<ApiResponse<List<RideResponse>>> filterRides(
             @RequestParam(required = false) String from,
@@ -93,7 +107,6 @@ public class RideController {
                     .body(ApiResponse.error("Filter operation failed", e.getMessage()));
         }
     }
-
     @GetMapping("/my-rides")
     public ResponseEntity<ApiResponse<List<RideResponse>>> getMyRides(Authentication authentication) {
         try {
