@@ -107,6 +107,20 @@ public class RideController {
         }
     }
 
+    @DeleteMapping("/{id}/cancel")
+    public ResponseEntity<ApiResponse<String>> cancelRide(
+            @PathVariable Long id,
+            Authentication authentication) {
+        try {
+            CustomUserPrincipal userPrincipal = (CustomUserPrincipal) authentication.getPrincipal();
+            rideService.cancelRide(id, userPrincipal.getUserId());
+            return ResponseEntity.ok(ApiResponse.success("Ride cancelled successfully"));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(ApiResponse.error("Failed to cancel ride", e.getMessage()));
+        }
+    }
+
     @GetMapping("/filter")
     public ResponseEntity<ApiResponse<List<RideResponse>>> filterRides(
             @RequestParam(required = false) String from,
