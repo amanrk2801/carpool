@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -80,6 +81,20 @@ public class BookingController {
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(ApiResponse.error("Booking not found", e.getMessage()));
+        }
+    }
+    
+
+    @PutMapping("/{id}/confirm")
+    public ResponseEntity<ApiResponse<BookingResponse>> confirmBooking(
+            @PathVariable Long id, Authentication authentication) {
+        try {
+            CustomUserPrincipal userPrincipal = (CustomUserPrincipal) authentication.getPrincipal();
+            BookingResponse booking = bookingService.confirmBooking(id, userPrincipal.getUserId());
+            return ResponseEntity.ok(ApiResponse.success("Booking confirmed successfully", booking));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(ApiResponse.error("Failed to confirm booking", e.getMessage()));
         }
     }
 
