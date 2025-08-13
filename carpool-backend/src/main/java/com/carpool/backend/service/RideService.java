@@ -134,6 +134,18 @@ public class RideService {
         return mapToRideResponse(updatedRide);
     }
 
+    public void cancelRide(Long rideId, Long driverId) {
+        Ride ride = rideRepository.findById(rideId)
+                .orElseThrow(() -> new RuntimeException("Ride not found"));
+
+        if (!ride.getDriver().getId().equals(driverId)) {
+            throw new RuntimeException("Unauthorized to cancel this ride");
+        }
+
+        ride.setStatus(Ride.RideStatus.CANCELLED);
+        rideRepository.save(ride);
+    }
+
     public List<RideResponse> filterRides(String from, String to, LocalDate startDate, LocalDate endDate,
                                         BigDecimal minPrice, BigDecimal maxPrice, Integer minSeats,
                                         int page, int size) {
