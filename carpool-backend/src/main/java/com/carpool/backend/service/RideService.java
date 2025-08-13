@@ -12,9 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.carpool.backend.dto.response.RideResponse;
 import com.carpool.backend.entity.Ride;
-import com.carpool.backend.repository.BookingRepository;
 import com.carpool.backend.repository.RideRepository;
-import com.carpool.backend.repository.UserRepository;
 
 @Service
 @Transactional
@@ -41,6 +39,27 @@ public class RideService {
         }
 
         return rides.stream()
+                .map(this::mapToRideResponse)
+                .collect(Collectors.toList());
+    }
+
+
+    public List<RideResponse> filterRides(String from, String to, LocalDate startDate, LocalDate endDate,
+                                        BigDecimal minPrice, BigDecimal maxPrice, Integer minSeats,
+                                        int page, int size) {
+        
+        List<Ride> rides = rideRepository.findActiveRides();
+
+        return rides.stream()
+                .filter(ride -> from == null || ride.getFromLocation().toLowerCase().contains(from.toLowerCase()))
+                .filter(ride -> to == null || ride.getToLocation().toLowerCase().contains(to.toLowerCase()))
+                .filter(ride -> startDate == null || !ride.getDepartureDate().isBefore(startDate))
+                .filter(ride -> endDate == null || !ride.getDepartureDate().isAfter(endDate))
+                .filter(ride -> minPrice == null || ride.getPricePerSeat().compareTo(minPrice) >= 0)
+                .filter(ride -> maxPrice == null || ride.getPricePerSeat().compareTo(maxPrice) <= 0)
+                .filter(ride -> minSeats == null || ride.getAvailableSeats() >= minSeats)
+                .skip(page * size)
+                .limit(size)
                 .map(this::mapToRideResponse)
                 .collect(Collectors.toList());
     }

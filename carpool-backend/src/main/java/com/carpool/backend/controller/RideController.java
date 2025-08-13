@@ -73,6 +73,27 @@ public class RideController {
     }
     
 
+    @GetMapping("/filter")
+    public ResponseEntity<ApiResponse<List<RideResponse>>> filterRides(
+            @RequestParam(required = false) String from,
+            @RequestParam(required = false) String to,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+            @RequestParam(required = false) BigDecimal minPrice,
+            @RequestParam(required = false) BigDecimal maxPrice,
+            @RequestParam(required = false) Integer minSeats,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        try {
+            List<RideResponse> rides = rideService.filterRides(from, to, startDate, endDate, 
+                    minPrice, maxPrice, minSeats, page, size);
+            return ResponseEntity.ok(ApiResponse.success("Filtered rides retrieved", rides));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(ApiResponse.error("Filter operation failed", e.getMessage()));
+        }
+    }
+
     @PostMapping("/{id}/book")
     public ResponseEntity<ApiResponse<BookingResponse>> bookRide(
             @PathVariable Long id,
