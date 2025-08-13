@@ -19,6 +19,7 @@ import com.carpool.backend.entity.Ride;
 import com.carpool.backend.entity.User;
 import com.carpool.backend.exception.ResourceNotFoundException;
 import com.carpool.backend.exception.RideNotAvailableException;
+import com.carpool.backend.exception.UnauthorizedException;
 import com.carpool.backend.repository.BookingRepository;
 import com.carpool.backend.repository.RideRepository;
 import com.carpool.backend.repository.UserRepository;
@@ -101,6 +102,18 @@ public class BookingService {
         return bookings.stream()
                 .map(this::convertToBookingResponse)
                 .collect(Collectors.toList());
+    }
+
+    
+    public BookingResponse getBookingDetails(Long bookingId, Long userId) {
+        Booking booking = bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new ResourceNotFoundException("Booking not found with id: " + bookingId));
+
+        if (!booking.getPassenger().getId().equals(userId) && 
+            !booking.getRide().getDriver().getId().equals(userId)) {
+            throw new UnauthorizedException("You are not authorized to view this booking");
+        }
+        return convertToBookingResponse(booking);
     }
 
 
