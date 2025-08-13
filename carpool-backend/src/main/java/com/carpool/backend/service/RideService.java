@@ -118,33 +118,26 @@ public class RideService {
             throw new RuntimeException("Cannot update inactive ride");
         }
 
-        // Calculate current booked seats
         int currentBookedSeats = ride.getTotalSeats() - ride.getAvailableSeats();
         int newTotalSeats = request.getPassengers();
 
-        // Validate seat changes - cannot reduce seats below already booked
         if (newTotalSeats < currentBookedSeats) {
             throw new RuntimeException("Cannot reduce total seats below already booked seats (" + currentBookedSeats + ")");
         }
 
-        // Check if price per seat has changed
         boolean priceChanged = !ride.getPricePerSeat().equals(request.getPricePerSeat());
 
-        // Update basic ride information
         ride.setFromLocation(request.getFrom());
         ride.setToLocation(request.getTo());
         ride.setDepartureDate(request.getDepartureDate());
         ride.setDepartureTime(request.getDepartureTime());
 
-        // Update seats
         ride.setTotalSeats(newTotalSeats);
         ride.setAvailableSeats(newTotalSeats - currentBookedSeats);
 
-        // Update pricing
         BigDecimal oldPricePerSeat = ride.getPricePerSeat();
         ride.setPricePerSeat(request.getPricePerSeat());
 
-        // Update other fields
         ride.setCarModel(request.getCarModel());
         ride.setCarNumber(request.getCarNumber());
         ride.setAdditionalInfo(request.getAdditionalInfo());
@@ -167,6 +160,58 @@ public class RideService {
         }
 
         ride.setStatus(Ride.RideStatus.CANCELLED);
+        rideRepository.save(ride);
+    }
+
+    public void updateRideStatus(Long rideId, String statusString, Long driverId) {
+        Ride ride = rideRepository.findById(rideId)
+                .orElseThrow(() -> new RuntimeException("Ride not found"));
+
+        if (!ride.getDriver().getId().equals(driverId)) {
+            throw new RuntimeException("Unauthorized to update this ride status");
+        }
+
+        Ride.RideStatus newStatus;
+        try {
+            newStatus = Ride.RideStatus.valueOf(statusString.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new RuntimeException("Invalid status: " + statusString + ". Valid statuses are: ACTIVE, COMPLETED, CANCELLED");
+        }
+
+        Ride.RideStatus currentStatus = ride.getStatus();
+
+        if (currentStatus == Ride.RideStatus.COMPLETED) {
+            throw new RuntimeException("Cannot change status of a completed ride");
+        }
+
+        if (currentStatus == Ride.RideStatus.CANCELLED && newStatus == Ride.RideStatus.ACTIVE) {
+            LocalDateTime rideDateTime = LocalDateTime.of(ride.getDepartureDate(), ride.getDepartureTime());
+            if (rideDateTime.isBefore(LocalDateTime.now())) {
+                throw new RuntimeException("Cannot reactivate rides that have already started");
+            }
+        }
+
+        if (newStatus == Ride.RideStatus.COMPLETED) {
+            LocalDateTime rideDateTime = LocalDateTime.of(ride.getDepartureDate(), ride.getDepartureTime());
+            if (rideDateTime.isAfter(LocalDateTime.now())) {
+                throw new RuntimeException("Cannot mark future rides as completed");
+            }
+        }
+
+        if (newStatus == Ride.RideStatus.CANCELLED && currentStatus == Ride.RideStatus.ACTIVE) {
+            List<Booking> activeBookings = bookingRepository.findByRideIdAndStatus(rideId, Booking.BookingStatus.CONFIRMED);
+            activeBookings.addAll(bookingRepository.findByRideIdAndStatus(rideId, Booking.BookingStatus.PENDING));
+
+            if (!activeBookings.isEmpty()) {
+                for (Booking booking : activeBookings) {
+                    booking.setStatus(Booking.BookingStatus.CANCELLED);
+                    bookingRepository.save(booking);
+                }
+            }
+        }
+
+        // Update the ride status
+        ride.setStatus(newStatus);
         rideRepository.save(ride);
     }
 
@@ -244,13 +289,11 @@ public class RideService {
             activeBookings.addAll(bookingRepository.findByRideIdAndStatus(rideId, Booking.BookingStatus.PENDING));
 
             for (Booking booking : activeBookings) {
-                // Calculate new total amount
                 BigDecimal newTotalAmount = newPrice.multiply(BigDecimal.valueOf(booking.getSeatsBooked()));
                 booking.setTotalAmount(newTotalAmount);
                 bookingRepository.save(booking);
             }
         } catch (Exception e) {
-            // Log error but don't fail the ride update
             System.err.println("Failed to update booking amounts for ride " + rideId + ": " + e.getMessage());
         }
     }
