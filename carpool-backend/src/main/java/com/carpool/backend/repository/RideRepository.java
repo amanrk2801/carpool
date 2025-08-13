@@ -40,7 +40,6 @@ public interface RideRepository extends JpaRepository<Ride, Long> {
                                        @Param("startTime") LocalTime startTime,
                                        @Param("endTime") LocalTime endTime);
 
-
     @Query("SELECT r FROM Ride r WHERE r.fromLocation LIKE %:from% " +
            "AND r.toLocation LIKE %:to% " +
            "AND r.departureDate = :date " +
@@ -53,5 +52,9 @@ public interface RideRepository extends JpaRepository<Ride, Long> {
                                          @Param("date") LocalDate date,
                                          @Param("seats") Integer seats,
                                          @Param("maxPrice") BigDecimal maxPrice);
+
+    @Query("SELECT r FROM Ride r WHERE r.status = 'ACTIVE'")
+    List<Ride> findActiveRides();
+
 
 }
