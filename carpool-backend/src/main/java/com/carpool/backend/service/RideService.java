@@ -80,6 +80,10 @@ public class RideService {
                 .collect(Collectors.toList());
     }
 
+    public List<String> getDistinctFromLocations() {
+        return rideRepository.findDistinctFromLocations();
+    }
+
     private RideResponse mapToRideResponse(Ride ride) {
         RideResponse response = new RideResponse();
         response.setId(ride.getId());

@@ -58,5 +58,8 @@ public interface RideRepository extends JpaRepository<Ride, Long> {
     @Query("SELECT r FROM Ride r WHERE r.status = 'ACTIVE'")
     List<Ride> findActiveRides();
 
+    @Query("SELECT DISTINCT r.fromLocation FROM Ride r WHERE r.status = 'ACTIVE'")
+    List<String> findDistinctFromLocations();
+
 
 }
