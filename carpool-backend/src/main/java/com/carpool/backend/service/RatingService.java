@@ -79,7 +79,6 @@ public class RatingService {
         return convertToResponse(savedRating);
     }
 
-
     @Transactional
     public void updateUserRating(Long userId) {
         BigDecimal avgRating = ratingRepository.findAverageRatingByUserId(userId);
@@ -105,7 +104,14 @@ public class RatingService {
         userRepository.save(user);
     }
     
-    
+
+    public List<RatingResponse> getUserRatings(Long userId) {
+        List<Rating> ratings = ratingRepository.findByRateeId(userId);
+        return ratings.stream()
+                .map(this::convertToResponse)
+                .collect(Collectors.toList());
+    }
+
     public List<RatingResponse> getRecentUserRatings(Long userId, int limit) {
         List<Rating> ratings = ratingRepository.findRecentRatingsByUserId(userId);
         return ratings.stream()

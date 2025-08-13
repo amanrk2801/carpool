@@ -41,9 +41,21 @@ public class RatingController {
                 "Rating created successfully", 
                 rating
         ));
+    } 
+
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<ApiResponse<List<RatingResponse>>> getUserRatings(
+            @PathVariable Long userId) {
+        
+        List<RatingResponse> ratings = ratingService.getUserRatings(userId);
+        
+        return ResponseEntity.ok(new ApiResponse<>(
+                true, 
+                "User ratings retrieved successfully", 
+                ratings
+        ));
     }
-    
-    
+
     @GetMapping("/user/{userId}/recent")
     public ResponseEntity<ApiResponse<List<RatingResponse>>> getRecentUserRatings(
             @PathVariable Long userId,

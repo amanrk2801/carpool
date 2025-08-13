@@ -21,4 +21,5 @@ public interface RatingRepository extends JpaRepository<Rating, Long> {
 	@Query("SELECT r FROM Rating r WHERE r.ratee.id = :userId ORDER BY r.createdAt DESC")
     List<Rating> findRecentRatingsByUserId(@Param("userId") Long userId);
 
+    List<Rating> findByRateeId(Long rateeId);
 }
