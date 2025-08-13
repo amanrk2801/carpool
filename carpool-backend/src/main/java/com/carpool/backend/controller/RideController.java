@@ -94,6 +94,18 @@ public class RideController {
         }
     }
 
+    @GetMapping("/my-rides")
+    public ResponseEntity<ApiResponse<List<RideResponse>>> getMyRides(Authentication authentication) {
+        try {
+            CustomUserPrincipal userPrincipal = (CustomUserPrincipal) authentication.getPrincipal();
+            List<RideResponse> rides = rideService.getDriverRides(userPrincipal.getUserId());
+            return ResponseEntity.ok(ApiResponse.success("Rides retrieved", rides));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(ApiResponse.error("Failed to retrieve rides", e.getMessage()));
+        }
+    }
+
     @PostMapping("/{id}/book")
     public ResponseEntity<ApiResponse<BookingResponse>> bookRide(
             @PathVariable Long id,
