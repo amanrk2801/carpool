@@ -87,6 +87,18 @@ public class RideController {
                     .body(ApiResponse.error("Search failed", e.getMessage()));
         }
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ApiResponse<RideResponse>> getRideDetails(@PathVariable Long id) {
+        try {
+            RideResponse ride = rideService.getRideDetails(id);
+            return ResponseEntity.ok(ApiResponse.success("Ride details retrieved", ride));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(ApiResponse.error("Ride not found", e.getMessage()));
+        }
+    }
+
     @GetMapping("/filter")
     public ResponseEntity<ApiResponse<List<RideResponse>>> filterRides(
             @RequestParam(required = false) String from,

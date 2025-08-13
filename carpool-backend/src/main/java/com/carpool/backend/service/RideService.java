@@ -70,6 +70,12 @@ public class RideService {
                 .collect(Collectors.toList());
     }
 
+    public RideResponse getRideDetails(Long rideId) {
+        Ride ride = rideRepository.findById(rideId)
+                .orElseThrow(() -> new RuntimeException("Ride not found"));
+
+        return mapToRideResponse(ride);
+    }
 
     public List<RideResponse> filterRides(String from, String to, LocalDate startDate, LocalDate endDate,
                                         BigDecimal minPrice, BigDecimal maxPrice, Integer minSeats,
