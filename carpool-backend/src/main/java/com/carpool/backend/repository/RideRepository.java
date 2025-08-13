@@ -65,4 +65,10 @@ public interface RideRepository extends JpaRepository<Ride, Long> {
     List<String> findDistinctToLocations();
 
 
+    @Query("SELECT COUNT(r) FROM Ride r WHERE r.driver.id = :driverId AND r.status = 'COMPLETED'")
+    Long countCompletedRidesByDriverId(@Param("driverId") Long driverId);
+
+    @Query("SELECT COUNT(DISTINCT b.ride) FROM Booking b WHERE b.passenger.id = :passengerId AND b.ride.status = 'COMPLETED' AND b.status = 'CONFIRMED'")
+    Long countCompletedBookingsByPassengerId(@Param("passengerId") Long passengerId);
+
 }
