@@ -24,4 +24,8 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
            "ORDER BY b.createdAt DESC")
     List<Booking> findByPassengerIdOrderByCreatedAtDesc(@Param("passengerId") Long passengerId);
 
+    @Query("SELECT b FROM Booking b WHERE b.ride.driver.id = :driverId " +
+           "ORDER BY b.createdAt DESC")
+    List<Booking> findByDriverIdOrderByCreatedAtDesc(@Param("driverId") Long driverId);
+
 }

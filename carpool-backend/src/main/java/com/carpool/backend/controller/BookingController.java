@@ -57,5 +57,17 @@ public class BookingController {
         }
     }
 
+    @GetMapping("/my-ride-bookings")
+    public ResponseEntity<ApiResponse<List<BookingResponse>>> getMyRideBookings(Authentication authentication) {
+        try {
+            CustomUserPrincipal userPrincipal = (CustomUserPrincipal) authentication.getPrincipal();
+            List<BookingResponse> bookings = bookingService.getDriverBookings(userPrincipal.getUserId());
+            return ResponseEntity.ok(ApiResponse.success("Driver bookings retrieved successfully", bookings));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(ApiResponse.error("Failed to retrieve driver bookings", e.getMessage()));
+        }
+    }
+
 
 }
