@@ -96,6 +96,13 @@ public class BookingService {
                 .collect(Collectors.toList());
     }
 
+    public List<BookingResponse> getDriverBookings(Long driverId) {
+        List<Booking> bookings = bookingRepository.findByDriverIdOrderByCreatedAtDesc(driverId);
+        return bookings.stream()
+                .map(this::convertToBookingResponse)
+                .collect(Collectors.toList());
+    }
+
 
     private BookingResponse convertToBookingResponse(Booking booking) {
         BookingResponse response = new BookingResponse();
