@@ -84,6 +84,10 @@ public class RideService {
         return rideRepository.findDistinctFromLocations();
     }
 
+    public List<String> getDistinctToLocations() {
+        return rideRepository.findDistinctToLocations();
+    }
+
     private RideResponse mapToRideResponse(Ride ride) {
         RideResponse response = new RideResponse();
         response.setId(ride.getId());

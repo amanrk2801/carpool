@@ -117,6 +117,17 @@ public class RideController {
         }
     }
 
+    @GetMapping("/locations/to")
+    public ResponseEntity<ApiResponse<List<String>>> getToLocations() {
+        try {
+            List<String> locations = rideService.getDistinctToLocations();
+            return ResponseEntity.ok(ApiResponse.success("To locations retrieved", locations));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(ApiResponse.error("Failed to retrieve locations", e.getMessage()));
+        }
+    }
+
     @PostMapping("/{id}/book")
     public ResponseEntity<ApiResponse<BookingResponse>> bookRide(
             @PathVariable Long id,
