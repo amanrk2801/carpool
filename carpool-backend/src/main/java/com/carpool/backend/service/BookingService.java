@@ -2,6 +2,8 @@ package com.carpool.backend.service;
 
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -131,6 +133,43 @@ public class BookingService {
         booking.setStatus(BookingStatus.CONFIRMED);
         booking = bookingRepository.save(booking);
 
+        return convertToBookingResponse(booking);
+    }
+
+    
+    @Transactional
+    public BookingResponse cancelBooking(Long bookingId, Long userId) {
+        Booking booking = bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new ResourceNotFoundException("Booking not found with id: " + bookingId));
+
+        if (!booking.getPassenger().getId().equals(userId)) {
+            throw new UnauthorizedException("You can only cancel your own bookings");
+        }
+
+        if (booking.getStatus().equals(BookingStatus.CANCELLED) || 
+            booking.getStatus().equals(BookingStatus.COMPLETED)) {
+            throw new ValidationException("Cannot cancel booking with status: " + booking.getStatus());
+        }
+
+        LocalDate today = LocalDate.now();
+        LocalTime now = LocalTime.now();
+        if (booking.getRide().getDepartureDate().isBefore(today) || 
+            (booking.getRide().getDepartureDate().isEqual(today) && 
+             booking.getRide().getDepartureTime().isBefore(now))) {
+            throw new ValidationException("Cannot cancel booking for a ride that has already started");
+        }
+
+        booking.setStatus(BookingStatus.CANCELLED);
+        
+        if (booking.getPaymentStatus().equals(PaymentStatus.COMPLETED)) {
+            booking.setPaymentStatus(PaymentStatus.REFUNDED);
+        }
+
+        Ride ride = booking.getRide();
+        ride.setAvailableSeats(ride.getAvailableSeats() + booking.getSeatsBooked());
+        rideRepository.save(ride);
+
+        booking = bookingRepository.save(booking);
         return convertToBookingResponse(booking);
     }
 
