@@ -11,14 +11,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.carpool.backend.dto.request.BookingCreateRequest;
 import com.carpool.backend.dto.response.ApiResponse;
@@ -96,6 +89,21 @@ public class RideController {
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(ApiResponse.error("Ride not found", e.getMessage()));
+        }
+    }
+
+    @PutMapping("/{id}/update")
+    public ResponseEntity<ApiResponse<RideResponse>> updateRide(
+            @PathVariable Long id,
+            @Valid @RequestBody RideOfferRequest request,
+            Authentication authentication) {
+        try {
+            CustomUserPrincipal userPrincipal = (CustomUserPrincipal) authentication.getPrincipal();
+            RideResponse ride = rideService.updateRide(id, request, userPrincipal.getUserId());
+            return ResponseEntity.ok(ApiResponse.success("Ride updated successfully", ride));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(ApiResponse.error("Failed to update ride", e.getMessage()));
         }
     }
 

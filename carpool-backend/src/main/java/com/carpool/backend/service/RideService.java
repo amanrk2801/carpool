@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.carpool.backend.dto.request.RideOfferRequest;
+import com.carpool.backend.entity.Booking;
+import com.carpool.backend.repository.BookingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,6 +28,9 @@ public class RideService {
     
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private BookingRepository bookingRepository;
 
     public RideResponse offerRide(RideOfferRequest request, Long driverId) {
         User driver = userRepository.findById(driverId)
@@ -75,6 +80,58 @@ public class RideService {
                 .orElseThrow(() -> new RuntimeException("Ride not found"));
 
         return mapToRideResponse(ride);
+    }
+
+    public RideResponse updateRide(Long rideId, RideOfferRequest request, Long driverId) {
+        Ride ride = rideRepository.findById(rideId)
+                .orElseThrow(() -> new RuntimeException("Ride not found"));
+
+        if (!ride.getDriver().getId().equals(driverId)) {
+            throw new RuntimeException("Unauthorized to update this ride");
+        }
+
+        if (!ride.isActive()) {
+            throw new RuntimeException("Cannot update inactive ride");
+        }
+
+        // Calculate current booked seats
+        int currentBookedSeats = ride.getTotalSeats() - ride.getAvailableSeats();
+        int newTotalSeats = request.getPassengers();
+
+        // Validate seat changes - cannot reduce seats below already booked
+        if (newTotalSeats < currentBookedSeats) {
+            throw new RuntimeException("Cannot reduce total seats below already booked seats (" + currentBookedSeats + ")");
+        }
+
+        // Check if price per seat has changed
+        boolean priceChanged = !ride.getPricePerSeat().equals(request.getPricePerSeat());
+
+        // Update basic ride information
+        ride.setFromLocation(request.getFrom());
+        ride.setToLocation(request.getTo());
+        ride.setDepartureDate(request.getDepartureDate());
+        ride.setDepartureTime(request.getDepartureTime());
+
+        // Update seats
+        ride.setTotalSeats(newTotalSeats);
+        ride.setAvailableSeats(newTotalSeats - currentBookedSeats);
+
+        // Update pricing
+        BigDecimal oldPricePerSeat = ride.getPricePerSeat();
+        ride.setPricePerSeat(request.getPricePerSeat());
+
+        // Update other fields
+        ride.setCarModel(request.getCarModel());
+        ride.setCarNumber(request.getCarNumber());
+        ride.setAdditionalInfo(request.getAdditionalInfo());
+        ride.setInstantBooking(request.isInstantBooking());
+
+        Ride updatedRide = rideRepository.save(ride);
+
+        if (priceChanged && currentBookedSeats > 0) {
+            updateExistingBookingAmounts(ride.getId(), oldPricePerSeat, request.getPricePerSeat());
+        }
+        return mapToRideResponse(updatedRide);
     }
 
     public List<RideResponse> filterRides(String from, String to, LocalDate startDate, LocalDate endDate,
@@ -143,5 +200,22 @@ public class RideService {
         response.setRoute(routeInfo);
 
         return response;
+    }
+
+    private void updateExistingBookingAmounts(Long rideId, BigDecimal oldPrice, BigDecimal newPrice) {
+        try {
+            List<Booking> activeBookings = bookingRepository.findByRideIdAndStatus(rideId, Booking.BookingStatus.CONFIRMED);
+            activeBookings.addAll(bookingRepository.findByRideIdAndStatus(rideId, Booking.BookingStatus.PENDING));
+
+            for (Booking booking : activeBookings) {
+                // Calculate new total amount
+                BigDecimal newTotalAmount = newPrice.multiply(BigDecimal.valueOf(booking.getSeatsBooked()));
+                booking.setTotalAmount(newTotalAmount);
+                bookingRepository.save(booking);
+            }
+        } catch (Exception e) {
+            // Log error but don't fail the ride update
+            System.err.println("Failed to update booking amounts for ride " + rideId + ": " + e.getMessage());
+        }
     }
 }

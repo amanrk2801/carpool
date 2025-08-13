@@ -18,7 +18,10 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     List<Booking> findByRideIdAndPassengerIdAndStatus(@Param("rideId") Long rideId,
                                                      @Param("passengerId") Long passengerId,
                                                      @Param("status") Booking.BookingStatus status);
-    
+
+    @Query("SELECT b FROM Booking b WHERE b.ride.id = :rideId AND b.status = :status")
+    List<Booking> findByRideIdAndStatus(@Param("rideId") Long rideId,
+                                        @Param("status") Booking.BookingStatus status);
 
     @Query("SELECT b FROM Booking b WHERE b.passenger.id = :passengerId " +
            "ORDER BY b.createdAt DESC")
