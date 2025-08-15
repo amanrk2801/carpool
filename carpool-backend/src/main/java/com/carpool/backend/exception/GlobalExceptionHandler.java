@@ -1,6 +1,6 @@
 package com.carpool.backend.exception;
 
-import com.carpool.dto.response.ApiResponse;
+import com.carpool.backend.dto.response.ApiResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;

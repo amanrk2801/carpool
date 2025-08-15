@@ -1,7 +1,7 @@
 package com.carpool.backend.repository;
 
-import com.carpool.entity.Notification;
-import com.carpool.entity.User;
+import com.carpool.backend.entity.Notification;
+import com.carpool.backend.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

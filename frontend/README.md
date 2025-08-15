@@ -50,7 +50,7 @@ CarpoolConnect is a modern, secure ride-sharing platform designed specifically f
 - Secure login with JWT token-based authentication
 - Government ID verification (Aadhaar, PAN, Driving License)
 - Password strength validation
-- Remember me functionality
+-  functionality
 
 ### 🚙 **Ride Management**
 - **Offer Rides**: Create ride offerings with detailed route information

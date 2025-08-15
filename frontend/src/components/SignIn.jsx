@@ -98,21 +98,6 @@ function SignIn() {
             <p className="text-gray-600 text-sm sm:text-base">Sign in to your account</p>
           </div>
 
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4 sm:mb-6 text-center">
-            <h3 className="text-xs sm:text-sm font-medium text-blue-800 mb-2">
-              Test with Backend API:
-            </h3>
-            <div className="text-xs text-blue-700 space-y-1">
-              <div className="break-all">
-                <strong>Email:</strong> raj@example.com |{" "}
-                <strong>Password:</strong> password123
-              </div>
-              <div className="break-all">
-                <strong>Or register:</strong> Use any valid email with Indian phone number
-              </div>
-            </div>
-          </div>
-
           <div className="bg-white rounded-lg shadow-lg p-6 sm:p-8">
             <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
               {errors.submit && (
@@ -170,26 +155,6 @@ function SignIn() {
                 {errors.password && (
                   <p className="mt-1 text-red-500 text-sm">{errors.password}</p>
                 )}
-              </div>
-
-              <div className="flex items-center justify-between">
-                <label className="flex items-center">
-                  <input
-                    type="checkbox"
-                    name="rememberMe"
-                    checked={formData.rememberMe}
-                    onChange={handleInputChange}
-                    className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                  />
-                  <span className="ml-2 text-sm text-gray-600">Remember me</span>
-                </label>
-                
-                <button
-                  type="button"
-                  className="text-sm text-blue-600 hover:text-blue-500"
-                >
-                  Forgot password?
-                </button>
               </div>
 
               <button
