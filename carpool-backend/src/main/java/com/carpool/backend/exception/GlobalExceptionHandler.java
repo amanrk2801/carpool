@@ -1,4 +1,4 @@
-package com.carpool.exception;
+package com.carpool.backend.exception;
 
 import com.carpool.dto.response.ApiResponse;
 import org.springframework.http.HttpStatus;

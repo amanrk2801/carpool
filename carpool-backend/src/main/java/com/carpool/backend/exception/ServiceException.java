@@ -1,4 +1,4 @@
-package com.carpool.exception;
+package com.carpool.backend.exception;
 
 public class ServiceException extends RuntimeException {
     private String errorCode;

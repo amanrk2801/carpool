@@ -1,4 +1,4 @@
-package com.carpool.dto.request;
+package com.carpool.backend.dto.request;
 
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;

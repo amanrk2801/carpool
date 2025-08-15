@@ -1,4 +1,4 @@
-package com.carpool.exception;
+package com.carpool.backend.exception;
 
 public class PaymentException extends RuntimeException {
     public PaymentException(String message) {

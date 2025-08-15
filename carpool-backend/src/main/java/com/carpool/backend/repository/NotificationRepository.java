@@ -1,4 +1,4 @@
-package com.carpool.repository;
+package com.carpool.backend.repository;
 
 import com.carpool.entity.Notification;
 import com.carpool.entity.User;
