@@ -1,5 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { AuthContext } from './authUtils';
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import { apiService } from '../services/api';
+
+const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -9,7 +11,8 @@ export const AuthProvider = ({ children }) => {
     const userData = localStorage.getItem('user');
     if (userData) {
       try {
-        setUser(JSON.parse(userData));
+        const parsedUser = JSON.parse(userData);
+        setUser(parsedUser);
       } catch (error) {
         console.error('Error parsing user data:', error);
         localStorage.removeItem('user');
@@ -18,14 +21,61 @@ export const AuthProvider = ({ children }) => {
     setLoading(false);
   }, []);
 
-  const login = (userData) => {
-    localStorage.setItem('user', JSON.stringify(userData));
-    setUser(userData);
+  const login = async (credentials) => {
+    try {
+      const response = await apiService.login(credentials);
+      if (response.success) {
+        const userData = {
+          ...response.data.user,
+          token: response.data.token,
+          refreshToken: response.data.refreshToken,
+        };
+        localStorage.setItem('user', JSON.stringify(userData));
+        setUser(userData);
+        return { success: true, data: userData };
+      } else {
+        throw new Error(response.message || 'Login failed');
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      return { success: false, error: error.message };
+    }
   };
 
-  const logout = () => {
-    localStorage.removeItem('user');
-    setUser(null);
+  const register = async (userData) => {
+    try {
+      const response = await apiService.register(userData);
+      if (response.success) {
+        const registeredUser = {
+          ...response.data.user,
+          token: response.data.token,
+          refreshToken: response.data.refreshToken,
+        };
+        localStorage.setItem('user', JSON.stringify(registeredUser));
+        setUser(registeredUser);
+        return { success: true, data: registeredUser };
+      } else {
+        throw new Error(response.message || 'Registration failed');
+      }
+    } catch (error) {
+      console.error('Registration error:', error);
+      return { success: false, error: error.message };
+    }
+  };
+
+  const logout = async () => {
+    try {
+      // Call logout API if user is logged in
+      if (user) {
+        await apiService.logout();
+      }
+    } catch (error) {
+      console.error('Logout API error:', error);
+      // Continue with local logout even if API call fails
+    } finally {
+      localStorage.removeItem('user');
+      setUser(null);
+    }
   };
 
   const updateUser = (updatedData) => {
@@ -37,6 +87,7 @@ export const AuthProvider = ({ children }) => {
   const value = {
     user,
     login,
+    register,
     logout,
     updateUser,
     loading,
@@ -48,6 +99,14 @@ export const AuthProvider = ({ children }) => {
       {children}
     </AuthContext.Provider>
   );
+};
+
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (context === undefined) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
 };
 
 export default AuthContext;

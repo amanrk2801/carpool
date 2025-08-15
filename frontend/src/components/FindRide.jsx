@@ -1,50 +1,128 @@
-import { Car, MapPin, Calendar, Users, Search, Star } from 'lucide-react';
+import { Car, MapPin, Calendar, Users, Search, Star, Clock } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Footer from './Footer';
 import Navbar from './Navbar';
+import { useAuth } from '../contexts/AuthContext';
+import { apiService } from '../services/api';
 
 function FindRide() {
   const navigate = useNavigate();
-  const [user, setUser] = useState(null);
+  const { user } = useAuth();
   const [searchData, setSearchData] = useState({ from: '', to: '', date: '', time: '', passengers: 1 });
   const [isSearching, setIsSearching] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
+  const [rides, setRides] = useState([]);
+  const [error, setError] = useState('');
+  const [isBooking, setIsBooking] = useState(false);
+  const [bookingRideId, setBookingRideId] = useState(null);
 
   useEffect(() => {
-    const userData = localStorage.getItem('user');
-    if (userData) {
-      const parsedUser = JSON.parse(userData);
-      setUser(parsedUser);
-    } else {
+    if (!user) {
       navigate('/signin');
     }
-  }, [navigate]);
-
-  const rides = [
-    {
-      id: 1, driver: { name: "Rahul Sharma", rating: 4.8, trips: 45 },
-      route: { from: "Mumbai", to: "Pune" }, time: "09:00", date: "2025-08-05",
-      car: "Honda City", price: 350, seats: 3, instant: true
-    },
-    {
-      id: 2, driver: { name: "Priya Patel", rating: 4.9, trips: 67 },
-      route: { from: "Mumbai", to: "Pune" }, time: "14:30", date: "2025-08-05",
-      car: "Maruti Swift", price: 300, seats: 2, instant: false
-    }
-  ];
+  }, [user, navigate]);
 
   const handleSearch = async (e) => {
     e.preventDefault();
-    console.log('Search Data Object:', searchData);
     setIsSearching(true);
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    setHasSearched(true);
-    setIsSearching(false);
+    setError('');
+    
+    try {
+      // Validate inputs
+      if (!searchData.from.trim()) {
+        setError('Please enter a departure location');
+        setIsSearching(false);
+        return;
+      }
+      if (!searchData.to.trim()) {
+        setError('Please enter a destination');
+        setIsSearching(false);
+        return;
+      }
+      if (!searchData.date) {
+        setError('Please select a departure date');
+        setIsSearching(false);
+        return;
+      }
+      
+      const searchParams = {
+        from: searchData.from.trim(),
+        to: searchData.to.trim(),
+        date: searchData.date,
+        passengers: searchData.passengers
+      };
+
+      console.log('Search params:', searchParams);
+
+      const response = await apiService.searchRides(searchParams);
+      
+      if (response.success) {
+        setRides(response.data || []);
+        setHasSearched(true);
+      } else {
+        setError(response.message || 'Failed to search rides');
+        setRides([]);
+        setHasSearched(true);
+      }
+    } catch (err) {
+      console.error('Search error:', err);
+      setError('An error occurred while searching for rides');
+      setRides([]);
+      setHasSearched(true);
+    } finally {
+      setIsSearching(false);
+    }
   };
 
   const handleChange = (e) => {
     setSearchData(prev => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
+  const handleBookRide = async (ride) => {
+    if (!user) {
+      navigate('/signin');
+      return;
+    }
+
+    setIsBooking(true);
+    setBookingRideId(ride.id);
+    setError('');
+
+    try {
+      console.log('Booking ride:', ride.id, 'with data:', {
+        seatsRequested: searchData.passengers || 1,
+        pickupLocation: searchData.from || ride.from,
+        dropLocation: searchData.to || ride.to,
+      });
+
+      const bookingData = {
+        seatsRequested: searchData.passengers || 1,
+        pickupLocation: searchData.from || ride.from,
+        dropLocation: searchData.to || ride.to,
+      };
+
+      const response = await apiService.bookRide(ride.id, bookingData);
+      console.log('Booking response:', response);
+      
+      if (response.success) {
+        alert('Ride booked successfully! Check your dashboard for booking details.');
+        navigate('/dashboard');
+      } else {
+        console.error('Booking failed:', response);
+        setError(response.message || response.error || 'Failed to book ride');
+      }
+    } catch (err) {
+      console.error('Booking error:', err);
+      setError('An error occurred while booking the ride: ' + err.message);
+    } finally {
+      setIsBooking(false);
+      setBookingRideId(null);
+    }
+  };
+
+  const handleContactDriver = (ride) => {
+    alert(`Contact driver: ${ride.driver?.name || 'Driver'} at ${ride.driver?.phone || 'Phone not available'}`);
   };
 
   const getMinDate = () => new Date().toISOString().split('T')[0];
@@ -58,7 +136,7 @@ function FindRide() {
           <p className="text-sm sm:text-base text-gray-600 px-4">Search for available rides and travel with verified drivers.</p>
           {user && (
             <div className="mt-4 inline-block bg-blue-100 text-blue-800 p-2 sm:p-3 rounded-lg text-sm sm:text-base">
-              Welcome, <strong>{user.name}</strong>!
+              Welcome, <strong>{user.firstName || user.name}</strong>!
             </div>
           )}
         </div>
@@ -106,6 +184,13 @@ function FindRide() {
           </form>
         </div>
 
+        {/* Error Display */}
+        {error && (
+          <div className="max-w-4xl mx-auto mb-6 bg-red-50 border border-red-200 rounded-lg p-4 flex items-center">
+            <span className="text-red-700">{error}</span>
+          </div>
+        )}
+
         {hasSearched ? (
           <div className="space-y-4">
             <h2 className="text-xl sm:text-2xl font-bold text-gray-800 px-2">Available Rides ({rides.length})</h2>
@@ -114,31 +199,53 @@ function FindRide() {
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-start lg:items-center">
                   <div className="lg:col-span-3 flex items-center space-x-3">
                     <div className="w-10 h-10 sm:w-12 sm:h-12 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-sm sm:text-base">
-                      {ride.driver.name.split(' ').map(n => n[0]).join('')}
+                      {(ride.driver?.name || 'Unknown').split(' ').map(n => n[0]).join('')}
                     </div>
                     <div>
-                      <h3 className="font-semibold text-sm sm:text-base">{ride.driver.name}</h3>
+                      <h3 className="font-semibold text-sm sm:text-base">{ride.driver?.name || 'Unknown Driver'}</h3>
                       <div className="flex items-center text-xs sm:text-sm text-gray-600">
                         <Star className="w-3 h-3 sm:w-4 sm:h-4 text-yellow-500 mr-1" />
-                        {ride.driver.rating} ({ride.driver.trips} trips)
+                        {ride.driver?.rating || '0.0'} • {ride.carModel || 'Car'}
                       </div>
                     </div>
                   </div>
                   <div className="lg:col-span-5">
                     <div className="space-y-2">
-                      <div className="font-bold text-base sm:text-lg">{ride.time} | {ride.date}</div>
-                      <div className="text-sm sm:text-base">{ride.route.from} → {ride.route.to}</div>
-                      <div className="text-xs sm:text-sm text-gray-600">{ride.car} • {ride.seats} seats left</div>
+                      <div className="flex items-center text-sm text-gray-600 space-x-4">
+                        <div className="flex items-center">
+                          <Calendar className="h-4 w-4 mr-1" />
+                          {new Date(ride.departureDate).toLocaleDateString('en-IN')}
+                        </div>
+                        <div className="flex items-center">
+                          <Clock className="h-4 w-4 mr-1" />
+                          {ride.departureTime}
+                        </div>
+                      </div>
+                      <div className="font-medium text-sm sm:text-base">
+                        <MapPin className="h-4 w-4 inline mr-1 text-gray-400" />
+                        {ride.route?.from || ride.from || ride.fromLocation} → {ride.route?.to || ride.to || ride.toLocation}
+                      </div>
+                      <div className="text-xs sm:text-sm text-gray-600">
+                        <Users className="h-4 w-4 inline mr-1" />
+                        {ride.availableSeats || ride.totalSeats} seats available
+                      </div>
                     </div>
                   </div>
                   <div className="lg:col-span-4 lg:text-right space-y-2">
-                    <div className="text-xl sm:text-2xl font-bold">₹{ride.price}</div>
+                    <div className="text-xl sm:text-2xl font-bold">₹{ride.pricePerSeat}</div>
                     <div className="flex lg:flex-col space-x-2 lg:space-x-0 lg:space-y-2">
-                      <button className="flex-1 lg:w-full bg-blue-600 hover:bg-blue-700 text-white px-3 sm:px-4 py-2 rounded-lg text-sm sm:text-base touch-manipulation">
-                        {ride.instant ? 'Book Now' : 'Request'}
+                      <button 
+                        onClick={() => handleBookRide(ride)}
+                        disabled={isBooking && bookingRideId === ride.id}
+                        className="flex-1 lg:w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white px-3 sm:px-4 py-2 rounded-lg text-sm sm:text-base touch-manipulation"
+                      >
+                        {isBooking && bookingRideId === ride.id ? 'Booking...' : 'Book Ride'}
                       </button>
-                      <button className="flex-1 lg:w-full border border-gray-300 hover:bg-gray-100 px-3 sm:px-4 py-2 rounded-lg text-sm sm:text-base touch-manipulation">
-                        Contact
+                      <button 
+                        onClick={() => handleContactDriver(ride)}
+                        className="flex-1 lg:w-full border border-gray-300 hover:bg-gray-100 px-3 sm:px-4 py-2 rounded-lg text-sm sm:text-base touch-manipulation"
+                      >
+                        Contact Driver
                       </button>
                     </div>
                   </div>
