@@ -3,15 +3,11 @@ import { Shield, Car, Mail, Lock, Eye, EyeOff } from 'lucide-react';
 import Footer from './Footer';
 import Navbar from './Navbar';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 
 function SignIn() {
   const navigate = useNavigate();
-  
-  const dummyUsers = [
-    { email: 'rajesh@gmail.com', password: '123456', name: 'Rajesh Kumar' },
-    { email: 'priya@gmail.com', password: '123456', name: 'Priya Sharma' },
-    { email: 'driver@gmail.com', password: '123456', name: 'Vikash Gupta' }
-  ];
+  const { login } = useAuth();
   
   const [formData, setFormData] = useState({
     email: '',
@@ -20,7 +16,6 @@ function SignIn() {
   });
   
   const [showPassword, setShowPassword] = useState(false);
-  
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
 
@@ -66,24 +61,26 @@ function SignIn() {
     setIsLoading(true);
     
     try {
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      const user = dummyUsers.find(u => 
-        u.email === formData.email && u.password === formData.password
-      );
-      
-      if (user) {
-        localStorage.setItem('user', JSON.stringify(user));
-        console.log('Sign In successful:', user);
-        
-        // Redirect to dashboard after successful login
+      const credentials = {
+        email: formData.email,
+        password: formData.password,
+      };
+
+      const result = await login(credentials);
+
+      if (result.success) {
+        console.log('Login successful:', result.data);
         navigate('/dashboard');
       } else {
-        setErrors({ email: 'Invalid email or password. Try: rajesh@gmail.com / 123456' });
+        setErrors({ 
+          submit: result.error || 'Login failed. Please check your credentials.' 
+        });
       }
     } catch (error) {
-      console.error('Sign In error:', error);
-      setErrors({ email: 'Sign in failed. Please try again.' });
+      console.error('Login error:', error);
+      setErrors({ 
+        submit: 'Network error. Please check your connection and try again.' 
+      });
     } finally {
       setIsLoading(false);
     }
@@ -103,83 +100,125 @@ function SignIn() {
 
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4 sm:mb-6 text-center">
             <h3 className="text-xs sm:text-sm font-medium text-blue-800 mb-2">
-              Demo Credentials:
+              Test with Backend API:
             </h3>
             <div className="text-xs text-blue-700 space-y-1">
               <div className="break-all">
-                <strong>Email:</strong> abc@gmail.com |{" "}
-                <strong>Password:</strong> 123456
+                <strong>Email:</strong> raj@example.com |{" "}
+                <strong>Password:</strong> password123
               </div>
               <div className="break-all">
-                <strong>Email:</strong> driver@gmail.com |{" "}
-                <strong>Password:</strong> 123456
+                <strong>Or register:</strong> Use any valid email with Indian phone number
               </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-lg shadow-lg p-4 sm:p-6">
-            <div className="space-y-4">
-              {/* Email */}
-              <div className="relative">
-                <Mail className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
-                <input
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  placeholder="Email Address"
-                  className={`w-full pl-10 pr-3 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base ${
-                    errors.email ? 'border-red-500' : 'border-gray-300'
-                  }`}
-                />
+          <div className="bg-white rounded-lg shadow-lg p-6 sm:p-8">
+            <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
+              {errors.submit && (
+                <div className="bg-red-50 border border-red-200 rounded-lg p-3 text-center">
+                  <p className="text-red-700 text-sm">{errors.submit}</p>
+                </div>
+              )}
+
+              <div>
+                <label className="block text-gray-700 text-sm font-medium mb-2">
+                  Email Address
+                </label>
+                <div className="relative">
+                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+                  <input
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors ${
+                      errors.email ? 'border-red-500' : 'border-gray-300'
+                    }`}
+                    placeholder="Enter your email"
+                  />
+                </div>
                 {errors.email && (
-                  <p className="text-xs sm:text-sm text-red-600 mt-1">{errors.email}</p>
+                  <p className="mt-1 text-red-500 text-sm">{errors.email}</p>
                 )}
               </div>
 
-              <div className="relative">
-                <Lock className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
-                <input
-                  type={showPassword ? "text" : "password"}
-                  name="password"
-                  value={formData.password}
-                  onChange={handleInputChange}
-                  placeholder="Password"
-                  className={`w-full pl-10 pr-10 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base ${
-                    errors.password ? 'border-red-500' : 'border-gray-300'
-                  }`}
-                />
+              <div>
+                <label className="block text-gray-700 text-sm font-medium mb-2">
+                  Password
+                </label>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+                  <input
+                    type={showPassword ? 'text' : 'password'}
+                    name="password"
+                    value={formData.password}
+                    onChange={handleInputChange}
+                    className={`w-full pl-10 pr-12 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors ${
+                      errors.password ? 'border-red-500' : 'border-gray-300'
+                    }`}
+                    placeholder="Enter your password"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                  >
+                    {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                  </button>
+                </div>
+                {errors.password && (
+                  <p className="mt-1 text-red-500 text-sm">{errors.password}</p>
+                )}
+              </div>
+
+              <div className="flex items-center justify-between">
+                <label className="flex items-center">
+                  <input
+                    type="checkbox"
+                    name="rememberMe"
+                    checked={formData.rememberMe}
+                    onChange={handleInputChange}
+                    className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                  />
+                  <span className="ml-2 text-sm text-gray-600">Remember me</span>
+                </label>
+                
                 <button
                   type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-3 touch-manipulation"
+                  className="text-sm text-blue-600 hover:text-blue-500"
                 >
-                  {showPassword ? (
-                    <EyeOff className="h-5 w-5 text-gray-400" />
-                  ) : (
-                    <Eye className="h-5 w-5 text-gray-400" />
-                  )}
+                  Forgot password?
                 </button>
-                {errors.password && (
-                  <p className="text-xs sm:text-sm text-red-600 mt-1">{errors.password}</p>
-                )}
               </div>
 
               <button
-                onClick={handleSubmit}
+                type="submit"
                 disabled={isLoading}
-                className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white py-3 rounded-lg font-semibold transition-colors text-sm sm:text-base touch-manipulation"
+                className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {isLoading ? "Signing In..." : "Sign In"}
+                {isLoading ? (
+                  <div className="flex items-center justify-center">
+                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                    Signing In...
+                  </div>
+                ) : (
+                  'Sign In'
+                )}
               </button>
-            </div>
+            </form>
 
-            <p className="text-center text-xs sm:text-sm text-gray-600 mt-4">
-              Don't have an account?{" "}
-              <a href="/join" className="text-blue-600 underline cursor-pointer">
-                Join for free
-              </a>
-            </p>
+            <div className="mt-6 text-center">
+              <p className="text-gray-600 text-sm">
+                Don't have an account?{' '}
+                <button
+                  onClick={() => navigate('/signup')}
+                  className="text-blue-600 hover:text-blue-500 font-medium"
+                >
+                  Sign up here
+                </button>
+              </p>
+            </div>
           </div>
         </div>
       </div>

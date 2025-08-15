@@ -1,45 +1,48 @@
 import React, { useState, useEffect } from 'react';
 import { User, Mail, Phone, MapPin, Camera, Save, ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 import Navbar from './Navbar';
 import Footer from './Footer';
 
 const Profile = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   
-  const defaultProfile = {
-    name: 'Rajesh Kumar',
-    email: 'rajesh.kumar@gmail.com',
+  const [userProfile, setUserProfile] = useState({
+    name: 'User Name',
+    email: 'user@example.com',
     phone: '+91 98765 43210',
     location: 'Bangalore, Karnataka',
     bio: 'Software engineer who loves carpooling to beat Bangalore traffic and make new friends!',
     profilePicture: null
-  };
-
-  const [userProfile, setUserProfile] = useState(defaultProfile);
+  });
   const [isEditing, setIsEditing] = useState(false);
-  const [editedProfile, setEditedProfile] = useState({ ...defaultProfile });
+  const [editedProfile, setEditedProfile] = useState(userProfile);
 
   useEffect(() => {
-    const userData = localStorage.getItem('user');
-    if (userData) {
-      try {
-        const parsedUser = JSON.parse(userData);
-        const profileData = {
-          name: parsedUser.name || defaultProfile.name,
-          email: parsedUser.email || defaultProfile.email,
-          phone: parsedUser.phone || defaultProfile.phone,
-          location: parsedUser.location || defaultProfile.location,
-          bio: parsedUser.bio || defaultProfile.bio,
-          profilePicture: parsedUser.profilePicture || null
-        };
-        setUserProfile(profileData);
-        setEditedProfile(profileData);
-      } catch (error) {
-        console.error('Error parsing user data:', error);
-      }
+    if (user) {
+      const defaultProfile = {
+        name: 'User Name',
+        email: 'user@example.com',
+        phone: '+91 98765 43210',
+        location: 'Bangalore, Karnataka',
+        bio: 'Software engineer who loves carpooling to beat Bangalore traffic and make new friends!',
+        profilePicture: null
+      };
+
+      const profileData = {
+        name: user.firstName || user.name || defaultProfile.name,
+        email: user.email || defaultProfile.email,
+        phone: user.phone || defaultProfile.phone,
+        location: user.location || defaultProfile.location,
+        bio: user.bio || defaultProfile.bio,
+        profilePicture: user.profilePicture || null
+      };
+      setUserProfile(profileData);
+      setEditedProfile(profileData);
     }
-  }, []);
+  }, [user]);
 
   const handleInputChange = (field, value) => {
     setEditedProfile(prev => ({
@@ -52,12 +55,23 @@ const Profile = () => {
     setUserProfile(editedProfile);
     setIsEditing(false);
     
-    const currentUser = localStorage.getItem('user');
-    if (currentUser) {
+    // Update localStorage to maintain consistency
+    if (user) {
       try {
-        const userData = JSON.parse(currentUser);
-        const updatedUser = { ...userData, ...editedProfile };
+        const updatedUser = { 
+          ...user, 
+          name: editedProfile.name,
+          firstName: editedProfile.name.split(' ')[0], // Update firstName too
+          email: editedProfile.email,
+          phone: editedProfile.phone,
+          location: editedProfile.location,
+          bio: editedProfile.bio,
+          profilePicture: editedProfile.profilePicture
+        };
         localStorage.setItem('user', JSON.stringify(updatedUser));
+        
+        // Force a page refresh to update AuthContext
+        window.location.reload();
       } catch (error) {
         console.error('Error updating user data:', error);
       }
@@ -81,6 +95,23 @@ const Profile = () => {
       reader.readAsDataURL(file);
     }
   };
+
+  // Redirect if no user is logged in
+  if (!user) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold text-gray-800 mb-4">Please login to view your profile</h2>
+          <button
+            onClick={() => navigate('/signin')}
+            className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700"
+          >
+            Go to Login
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
