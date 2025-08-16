@@ -16,6 +16,7 @@ import EditRideModal from './EditRideModal';
 import RatingModal from './RatingModal';
 import DashboardStats from './DashboardStats';
 import EmptyState from './EmptyState';
+import WhatsAppButton from './WhatsAppButton';
 import { useAuth } from '../contexts/AuthContext';
 import { apiService } from '../services/api';
 
@@ -277,13 +278,13 @@ const Dashboard = () => {
   };
 
   const handleContactDriver = (booking) => {
-    // This would typically open a chat/messaging interface
-    alert(`Contact driver: ${booking.driver?.name || booking.driverName} at ${booking.driver?.phone || 'Phone not available'}`);
+    // Use WhatsApp to contact driver - now handled by WhatsAppButton component
+    console.log('Contact driver:', booking.driver);
   };
 
   const handleContactPassenger = (booking) => {
-    // This would typically open a chat/messaging interface
-    alert(`Contact passenger: ${booking.passenger?.name || booking.passengerName} at ${booking.passenger?.phone || booking.passengerPhone || 'Phone not available'}`);
+    // Use WhatsApp to contact passenger - now handled by WhatsAppButton component
+    console.log('Contact passenger:', booking.passenger);
   };
 
   const handleRateDriver = (booking) => {

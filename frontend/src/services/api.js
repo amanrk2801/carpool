@@ -21,8 +21,63 @@ class ApiService {
     return null;
   }
 
-  // Generic API call method
-  async apiCall(endpoint, options = {}) {
+  // Get refresh token from localStorage
+  getRefreshToken() {
+    const userData = localStorage.getItem('user');
+    if (userData) {
+      try {
+        const user = JSON.parse(userData);
+        return user.refreshToken;
+      } catch (error) {
+        console.error('Error parsing user data:', error);
+        return null;
+      }
+    }
+    return null;
+  }
+
+  // Try to refresh the token
+  async tryRefreshToken() {
+    const refreshToken = this.getRefreshToken();
+    if (!refreshToken) {
+      return false;
+    }
+
+    try {
+      const response = await fetch(`${this.baseURL}/auth/refresh-token`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${refreshToken}`,
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        if (data.success) {
+          // Update localStorage with new tokens
+          const userData = JSON.parse(localStorage.getItem('user'));
+          const updatedUser = {
+            ...userData,
+            token: data.data.token,
+            refreshToken: data.data.refreshToken || refreshToken,
+          };
+          localStorage.setItem('user', JSON.stringify(updatedUser));
+          return true;
+        }
+      }
+    } catch (error) {
+      console.error('Token refresh failed:', error);
+    }
+
+    // If refresh failed, logout user
+    localStorage.removeItem('user');
+    window.location.href = '/signin';
+    return false;
+  }
+
+  // Generic API call method with token refresh
+  async apiCall(endpoint, options = {}, retryCount = 0) {
     const url = `${this.baseURL}${endpoint}`;
     const token = this.getAuthToken();
 
@@ -44,6 +99,15 @@ class ApiService {
 
     try {
       const response = await fetch(url, config);
+      
+      // If token expired and we haven't retried yet, try to refresh
+      if (response.status === 401 && retryCount === 0 && !endpoint.includes('/auth/')) {
+        const refreshResult = await this.tryRefreshToken();
+        if (refreshResult) {
+          // Retry the original request with new token
+          return this.apiCall(endpoint, options, 1);
+        }
+      }
       
       // Handle empty responses
       let data;
@@ -126,6 +190,33 @@ class ApiService {
 
   async logout() {
     return this.apiCall('/auth/logout', {
+      method: 'POST',
+    });
+  }
+
+  async refreshToken(refreshToken) {
+    return this.apiCall('/auth/refresh-token', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${refreshToken}`,
+      },
+    });
+  }
+
+  async verifyEmail(token) {
+    return this.apiCall(`/auth/verify-email?token=${token}`, {
+      method: 'GET',
+    });
+  }
+
+  async forgotPassword(email) {
+    return this.apiCall(`/auth/forgot-password?email=${encodeURIComponent(email)}`, {
+      method: 'POST',
+    });
+  }
+
+  async resetPassword(token, newPassword) {
+    return this.apiCall(`/auth/reset-password?token=${token}&newPassword=${encodeURIComponent(newPassword)}`, {
       method: 'POST',
     });
   }
@@ -241,6 +332,16 @@ class ApiService {
       method: 'PUT',
       body: JSON.stringify(profileData),
     });
+  }
+
+  async deleteUserAccount() {
+    return this.apiCall('/users/profile', {
+      method: 'DELETE',
+    });
+  }
+
+  async getUserById(userId) {
+    return this.apiCall(`/users/${userId}`);
   }
 
   // Rating APIs

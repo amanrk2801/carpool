@@ -13,6 +13,9 @@ import Help from './components/Help';
 import Dashboard from './components/Dashboard';
 import Profile from './components/Profile';
 import ProtectedRoute from './components/ProtectedRoute';
+import ForgotPassword from './components/ForgotPassword';
+import ResetPassword from './components/ResetPassword';
+import EmailVerification from './components/EmailVerification';
 
 function App() {
   return (
@@ -25,6 +28,9 @@ function App() {
           <Route path="/signin" element={<SignIn />} />
           <Route path="/signup" element={<JoinFree />} />
           <Route path="/join" element={<JoinFree />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="/verify-email" element={<EmailVerification />} />
           
           <Route path="/dashboard" element={
             <ProtectedRoute>

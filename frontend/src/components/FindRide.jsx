@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Footer from './Footer';
 import Navbar from './Navbar';
+import WhatsAppButton from './WhatsAppButton';
 import { useAuth } from '../contexts/AuthContext';
 import { apiService } from '../services/api';
 
@@ -121,10 +122,6 @@ function FindRide() {
     }
   };
 
-  const handleContactDriver = (ride) => {
-    alert(`Contact driver: ${ride.driver?.name || 'Driver'} at ${ride.driver?.phone || 'Phone not available'}`);
-  };
-
   const getMinDate = () => new Date().toISOString().split('T')[0];
 
   return (
@@ -241,12 +238,15 @@ function FindRide() {
                       >
                         {isBooking && bookingRideId === ride.id ? 'Booking...' : 'Book Ride'}
                       </button>
-                      <button 
-                        onClick={() => handleContactDriver(ride)}
-                        className="flex-1 lg:w-full border border-gray-300 hover:bg-gray-100 px-3 sm:px-4 py-2 rounded-lg text-sm sm:text-base touch-manipulation"
+                      <WhatsAppButton
+                        phoneNumber={ride.driver?.phone}
+                        userName={ride.driver?.name}
+                        userType="driver"
+                        variant="button"
+                        className="flex-1 lg:w-full border border-green-300 hover:bg-green-50 px-3 sm:px-4 py-2 rounded-lg text-sm sm:text-base text-green-600 justify-center"
                       >
-                        Contact Driver
-                      </button>
+                        Message Driver
+                      </WhatsAppButton>
                     </div>
                   </div>
                 </div>

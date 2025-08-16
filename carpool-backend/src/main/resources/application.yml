@@ -54,6 +54,14 @@ spring:
   #         starttls:
   #           enable: true
 
+# Twilio WhatsApp Configuration
+twilio:
+  account-sid: ${TWILIO_ACCOUNT_SID}
+  auth-token: ${TWILIO_AUTH_TOKEN}
+  whatsapp-from: ${TWILIO_WHATSAPP_FROM}
+  # Your personal phone number for testing
+  test-phone: ${TEST_PHONE_NUMBER}
+
 # File Storage Configuration (Optional - comment out for local testing)
 # file:
 #   upload-dir: ${FILE_UPLOAD_DIR:./uploads}
