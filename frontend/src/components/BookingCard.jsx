@@ -5,13 +5,12 @@ import {
   Clock, 
   User, 
   MoreVertical,
-  Eye,
   X,
   MessageCircle,
   Star,
-  Receipt,
   Check
 } from 'lucide-react';
+import WhatsAppButton from './WhatsAppButton';
 
 const BookingCard = ({ 
   booking, 
@@ -51,9 +50,6 @@ const BookingCard = ({
   const handleMenuAction = (action) => {
     setShowDropdown(false);
     switch (action) {
-      case 'view':
-        if (onViewBooking) onViewBooking(booking);
-        break;
       case 'cancel':
         if (onCancelBooking) onCancelBooking(booking);
         break;
@@ -147,9 +143,13 @@ const BookingCard = ({
             
             {/* Passenger Contact Info for Driver View */}
             {isDriverView && (booking.passenger?.phone || booking.passengerPhone) && (
-              <span className="text-blue-600 font-medium">
-                📞 {booking.passenger?.phone || booking.passengerPhone}
-              </span>
+              <WhatsAppButton
+                phoneNumber={booking.passenger?.phone || booking.passengerPhone}
+                userName={booking.passenger?.name || booking.passengerName}
+                userType="passenger"
+                variant="text"
+                className="text-green-600 text-xs font-medium"
+              />
             )}
           </div>
         </div>
@@ -196,25 +196,19 @@ const BookingCard = ({
             {showDropdown && (
               <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg border border-gray-200 z-10">
                 <div className="py-1">{/* Menu items continue here */}
-                  <button
-                    onClick={() => handleMenuAction('view')}
-                    className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                  >
-                    <Eye className="h-4 w-4 mr-3" />
-                    View Details
-                  </button>
                   
                   {/* Driver View Options */}
                   {isDriverView ? (
                     <>
-                      <button
-                        onClick={() => handleMenuAction('contact')}
-                        className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                        disabled={!onContactPassenger}
+                      <WhatsAppButton
+                        phoneNumber={booking.passenger?.phone || booking.passengerPhone}
+                        userName={booking.passenger?.name || booking.passengerName}
+                        userType="passenger"
+                        variant="button"
+                        className="w-full mb-2 justify-center text-sm"
                       >
-                        <MessageCircle className="h-4 w-4 mr-3" />
-                        Contact Passenger
-                      </button>
+                        Message Passenger
+                      </WhatsAppButton>
                       {booking.status?.toLowerCase() === 'completed' && (
                         <button
                           onClick={() => handleMenuAction('rate')}
@@ -250,14 +244,15 @@ const BookingCard = ({
                   ) : (
                     /* Passenger View Options */
                     <>
-                      <button
-                        onClick={() => handleMenuAction('contact')}
-                        className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                        disabled={!onContactDriver}
+                      <WhatsAppButton
+                        phoneNumber={booking.driver?.phone || booking.driverPhone}
+                        userName={booking.driver?.name || booking.driverName}
+                        userType="driver"
+                        variant="button"
+                        className="w-full mb-2 justify-center text-sm"
                       >
-                        <MessageCircle className="h-4 w-4 mr-3" />
-                        Contact Driver
-                      </button>
+                        Message Driver
+                      </WhatsAppButton>
                       {booking.status?.toLowerCase() === 'completed' && (
                         <button
                           onClick={() => handleMenuAction('rate')}
@@ -268,13 +263,6 @@ const BookingCard = ({
                           Rate Driver
                         </button>
                       )}
-                      <button
-                        onClick={() => handleMenuAction('receipt')}
-                        className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                      >
-                        <Receipt className="h-4 w-4 mr-3" />
-                        Download Receipt
-                      </button>
                       <hr className="my-1" />
                       {(booking.status?.toLowerCase() === 'pending' || booking.status?.toLowerCase() === 'confirmed') ? (
                         <button

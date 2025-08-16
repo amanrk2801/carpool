@@ -7,6 +7,7 @@ import {
   Car 
 } from 'lucide-react';
 import UserRatingDisplay from './UserRatingDisplay';
+import WhatsAppButton from './WhatsAppButton';
 
 const RideDetailsModal = ({ 
   isOpen, 
@@ -182,8 +183,19 @@ const RideDetailsModal = ({
                 <div className="space-y-2">
                   {ride.passengers.map((passenger, index) => (
                     <div key={index} className="flex items-center justify-between p-2 bg-white rounded">
-                      <span className="font-medium">{passenger.name || 'Passenger'}</span>
-                      <span className="text-sm text-gray-600">{passenger.seatsBooked || 1} seat(s)</span>
+                      <div className="flex-1">
+                        <span className="font-medium">{passenger.name || 'Passenger'}</span>
+                        <span className="text-sm text-gray-600 ml-2">({passenger.seatsBooked || 1} seat{(passenger.seatsBooked || 1) > 1 ? 's' : ''})</span>
+                      </div>
+                      {passenger.phone && (
+                        <WhatsAppButton
+                          phoneNumber={passenger.phone}
+                          userName={passenger.name}
+                          userType="passenger"
+                          variant="icon"
+                          className="ml-2"
+                        />
+                      )}
                     </div>
                   ))}
                 </div>
@@ -207,13 +219,16 @@ const RideDetailsModal = ({
                 Edit Ride
               </button>
             )}
-            {ride.isBookingView && ride.driver && (
-              <button 
-                onClick={() => alert(`Contact driver: ${ride.driver.name} at ${ride.driver.phone || 'Phone not available'}`)}
-                className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
+            {ride.isBookingView && ride.driver && ride.driver.phone && (
+              <WhatsAppButton
+                phoneNumber={ride.driver.phone}
+                userName={ride.driver.name}
+                userType="driver"
+                variant="button"
+                className="px-6 py-2"
               >
-                Contact Driver
-              </button>
+                Message Driver
+              </WhatsAppButton>
             )}
           </div>
         </div>

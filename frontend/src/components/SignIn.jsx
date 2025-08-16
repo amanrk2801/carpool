@@ -173,6 +173,15 @@ function SignIn() {
               </button>
             </form>
 
+            <div className="mt-4 text-center">
+              <button
+                onClick={() => navigate('/forgot-password')}
+                className="text-blue-600 hover:text-blue-500 text-sm font-medium"
+              >
+                Forgot your password?
+              </button>
+            </div>
+
             <div className="mt-6 text-center">
               <p className="text-gray-600 text-sm">
                 Don't have an account?{' '}
