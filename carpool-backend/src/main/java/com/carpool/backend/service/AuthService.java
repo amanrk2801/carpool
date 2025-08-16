@@ -45,9 +45,8 @@ public class AuthService {
     @Autowired
     private UserDetailsService userDetailsService;
 
-    // Commented out for local testing - uncomment when email is enabled
-    // @Autowired
-    // private EmailService emailService;
+    @Autowired
+    private TwilioWhatsAppService twilioWhatsAppService;
 
     public UserResponse register(RegisterRequest request) {
         // Check if user already exists
@@ -71,15 +70,21 @@ public class AuthService {
         // Save user
         User savedUser = userRepository.save(user);
 
-        // Send verification email (optional) - commented out for local testing
-        /*
+        // Send welcome WhatsApp message
         try {
-            emailService.sendWelcomeEmail(savedUser.getEmail(), savedUser.getFullName());
+            if (savedUser.getPhone() != null && !savedUser.getPhone().isEmpty()) {
+                String welcomeMessage = String.format(
+                    "🎉 Welcome to Carpool, %s!\n\nYour account has been created successfully. " +
+                    "You can now find rides or offer rides to fellow travelers.\n\n" +
+                    "Safe travels! 🚗",
+                    savedUser.getFullName()
+                );
+                twilioWhatsAppService.sendWhatsAppMessage(savedUser.getPhone(), welcomeMessage);
+            }
         } catch (Exception e) {
             // Log error but don't fail registration
-            System.err.println("Failed to send welcome email: " + e.getMessage());
+            System.err.println("Failed to send welcome WhatsApp message: " + e.getMessage());
         }
-        */
 
         return mapToUserResponse(savedUser);
     }
@@ -181,16 +186,25 @@ public class AuthService {
         // Generate password reset token
         String resetToken = jwtTokenUtil.generateToken(email, new HashMap<>());
 
-        // Send password reset email - commented out for local testing
-        /*
+        // Send password reset WhatsApp message
         try {
-            emailService.sendPasswordResetEmail(user.getEmail(), user.getFullName(), resetToken);
+            if (user.getPhone() != null && !user.getPhone().isEmpty()) {
+                String resetMessage = String.format(
+                    "🔐 Password Reset Request\n\n" +
+                    "Hi %s,\n\n" +
+                    "You requested a password reset for your Carpool account.\n\n" +
+                    "Reset Token: %s\n\n" +
+                    "Please use this token to reset your password. " +
+                    "If you didn't request this, please ignore this message.",
+                    user.getFullName(), resetToken
+                );
+                twilioWhatsAppService.sendWhatsAppMessage(user.getPhone(), resetMessage);
+            }
         } catch (Exception e) {
-            throw new RuntimeException("Failed to send password reset email");
+            System.err.println("Failed to send password reset WhatsApp message: " + e.getMessage());
         }
-        */
 
-        // For local testing, just log the reset token
+        // For local testing, also log the reset token
         System.out.println("Password reset token for " + user.getEmail() + ": " + resetToken);
     }
 
