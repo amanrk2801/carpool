@@ -1,444 +1,111 @@
-# 🚗 Carpool Web Application
+# 🚗 CarpoolConnect - Full-Stack Carpooling Platform
 
-A modern, full-stack carpooling platform that connects drivers and passengers for shared rides. Developed as part of the CDAC (Centre for Development of Advanced Computing) course project to promote sustainable transportation and reduce commuting costs.
+A complete ride-sharing application built with **Spring Boot** (Backend) and **React** (Frontend). Features user authentication, ride management, booking system, and user ratings.
 
-## 📋 Table of Contents
+## ⚡ Quick Overview
 
-- [About](#-about)
-- [Features](#-features)
-- [Tech Stack](#️-tech-stack)
-- [Architecture](#️-architecture)
-- [Getting Started](#-getting-started)
-- [API Documentation](#-api-documentation)
-- [Contributing](#-contributing)
-- [Team](#-team)
-- [License](#-license)
-- [Support](#-support)
+**What We Built**: Complete carpooling platform with authentication, ride CRUD operations, booking system, and rating functionality.
 
-## 📖 About
+**Tech Stack**: Spring Boot 3.2 + React 19 + MySQL + JWT Authentication + Tailwind CSS
 
-Carpool Web Application is a comprehensive ride-sharing solution designed to facilitate efficient carpooling between drivers and passengers. The platform emphasizes safety, reliability, and user experience while contributing to environmental sustainability by reducing traffic congestion and carbon emissions.
-
-### Key Objectives
-- **Environmental Impact**: Reduce carbon footprint through shared transportation
-- **Cost Efficiency**: Lower commuting expenses for users
-- **Community Building**: Foster connections between commuters
-- **Traffic Reduction**: Decrease urban congestion
-
-## ✨ Features
-
-### Core Functionality
-- 🔍 **Intelligent Ride Matching** - Advanced algorithm matching riders based on location, time, and preferences
-- 📅 **Flexible Scheduling** - Support for both immediate and advance ride bookings
-- 🗺️ **Interactive Route Planning** - Real-time map integration with optimized routing
-- 💬 **Secure Messaging System** - In-app communication between users
-- ⭐ **Rating & Review System** - Community-driven trust and safety mechanism
-
-### User Experience
-- 🔐 **Multi-layered Authentication** - JWT-based secure user authentication
-- 👤 **Comprehensive User Profiles** - Detailed profiles with verification status
-- 📱 **Responsive Design** - Optimized for desktop, tablet, and mobile devices
-- 🔔 **Real-time Notifications** - Instant updates on ride status and messages
-- 💳 **Payment Integration** - Secure payment processing for ride costs
 
 ## 🛠️ Tech Stack
 
-### Frontend
-| Technology | Version | Purpose |
-|------------|---------|---------|
-| React | 18.x | UI Framework |
-| Tailwind CSS | 3.x | Styling & Design System |
-| Redux Toolkit | 1.9.x | State Management |
-| React Router | 6.x | Client-side Routing |
-| Vite | 4.x | Build Tool & Development Server |
-| Axios | 1.x | HTTP Client |
+### Backend (Spring Boot)
+- **Framework**: Spring Boot 3.2.0, Spring Security, Spring Data JPA
+- **Database**: MySQL 8.x with Hibernate ORM
+- **Authentication**: JWT tokens with BCrypt password hashing
+- **Build**: Maven 3.x
 
-### Backend
-| Technology | Version | Purpose |
-|------------|---------|---------|
-| Spring Boot | 3.x | Application Framework |
-| Java | 17+ | Programming Language |
-| MySQL | 8.x | Primary Database |
-| Redis | 6.x | Caching & Session Management |
-| JWT | - | Authentication & Authorization |
-| Hibernate/JPA | 6.x | Object-Relational Mapping |
-| Apache Tomcat | 10.x | Application Server |
-| Maven | 3.x | Build & Dependency Management |
+### Frontend (React)
+- **Framework**: React 19.1.0 with Hooks & Context API
+- **Styling**: Tailwind CSS 4.1.11
+- **Routing**: React Router 7.7.0
+- **Build**: Vite 7.0.4
 
-### DevOps & Tools
-- **Version Control**: Git & GitHub
-- **IDE**: VS Code, IntelliJ IDEA
-- **API Testing**: Postman
-- **Database Management**: MySQL Workbench
+## 🎯 Core Features
 
-## 🏗️ Architecture
+### 🔐 Authentication System
+- User registration/login with JWT tokens
+- Protected routes and role-based access
+- Password encryption with BCrypt
 
-```
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│   Frontend      │    │   Backend       │    │   Database      │
-│   (React)       │◄──►│ (Spring Boot)   │◄──►│   (MySQL)       │
-│                 │    │                 │    │                 │
-│ • Components    │    │ • REST APIs     │    │ • User Data     │
-│ • State Mgmt    │    │ • Business      │    │ • Ride Info     │
-│ • Routing       │    │   Logic         │    │ • Transactions  │
-└─────────────────┘    └─────────────────┘    └─────────────────┘
-```
+### 🚗 Ride Management
+- **Offer Rides**: Create rides with route, timing, pricing
+- **Search Rides**: Find rides by location, date, time
+- **Manage Rides**: Edit, cancel, view details
 
-## 🚀 Getting Started
+### 📋 Booking System
+- **Book Rides**: Reserve seats with real-time availability
+- **Manage Bookings**: View, confirm, cancel bookings
+- **Status Tracking**: Pending → Confirmed → Completed
+
+### ⭐ Rating System
+- Rate drivers/passengers after rides
+- View user ratings and reviews
+- Automatic rating calculations
+
+## 🚀 Quick Start
 
 ### Prerequisites
-
-#### Frontend Development
-- **Node.js**: v16.0.0 or higher
-- **npm**: v7.0.0 or higher (or yarn v1.22.0+)
-
-#### Backend Development
-- **Java Development Kit (JDK)**: 17 or higher
-- **Maven**: 3.8.0 or higher
-- **MySQL**: 8.0 or higher
-
-### Frontend Setup
-
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/amanrk2801/carpool.git
-   cd carpool/frontend
-   ```
-
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
-
-3. **Configure environment variables**
-   ```bash
-   cp .env.example .env.local
-   # Edit .env.local with your configuration
-   ```
-
-4. **Start development server**
-   ```bash
-   npm run dev
-   ```
-
-5. **Access the application**
-   - Open your browser and navigate to `http://localhost:5173`
+- Java 21+, Maven 3.8+, MySQL 8+
+- Node.js 18+, npm 8+
 
 ### Backend Setup
-
-1. **Navigate to backend directory**
-   ```bash
-   cd carpool/backend
-   ```
-
-2. **Configure database**
-   ```bash
-   # Create MySQL database
-   mysql -u root -p
-   CREATE DATABASE carpool_db;
-   ```
-
-3. **Update application properties**
-   ```bash
-   cp src/main/resources/application.properties.example src/main/resources/application.properties
-   # Configure database connection and JWT secret
-   ```
-
-4. **Install dependencies and run**
-   ```bash
-   ./mvnw spring-boot:run
-   ```
-
-5. **Verify backend**
-   - API will be available at `http://localhost:8080`
-   - Health check: `http://localhost:8080/actuator/health`
-
-## 📚 API Documentation
-
-### Base URL
-```
-http://localhost:8080/api/v1
+```bash
+cd carpool-backend
+# Create database: carpool_db_completed_v1
+./mvnw spring-boot:run
+# Runs on http://localhost:8080
 ```
 
-### Authentication Endpoints
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/auth/register` | User registration |
-| POST | `/auth/login` | User login |
-| POST | `/auth/refresh` | Refresh JWT token |
-
-### Ride Management
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/rides` | Get available rides |
-| POST | `/rides` | Create new ride |
-| GET | `/rides/{id}` | Get ride details |
-| PUT | `/rides/{id}` | Update ride |
-| DELETE | `/rides/{id}` | Cancel ride |
-
-For detailed API documentation, visit `/swagger-ui.html` when the backend server is running.
-
-## 🤝 Contributing
-
-We welcome contributions from the community! Please read our contribution guidelines carefully.
-
-### Code of Conduct
-
-- Be respectful and inclusive
-- Follow professional communication standards
-- Provide constructive feedback
-- Help maintain a positive learning environment
-
-### Getting Started
-
-1. **Fork the repository**
-   ```bash
-   # Click "Fork" on GitHub, then:
-   git clone https://github.com/YOUR_USERNAME/carpool.git
-   cd carpool
-   ```
-
-2. **Set up upstream remote**
-   ```bash
-   git remote add upstream https://github.com/amanrk2801/carpool.git
-   ```
-
-3. **Create feature branch**
-   ```bash
-   git checkout -b feature/your-feature-name
-   ```
-
-### Frontend Contribution Guidelines
-
-#### Development Setup
+### Frontend Setup  
 ```bash
 cd frontend
 npm install
 npm run dev
+# Runs on http://localhost:5173
 ```
 
-#### Code Standards
-- **ESLint Configuration**: Follow the project's ESLint rules
-- **Component Structure**: Use functional components with hooks
-- **Styling**: Use Tailwind CSS utility classes
-- **State Management**: Use Redux for global state, local state for component-specific data
+## 📡 API Endpoints
 
-#### Frontend Checklist
-- [ ] Components are properly documented with PropTypes/TypeScript
-- [ ] Responsive design tested on multiple screen sizes
-- [ ] Accessibility standards (WCAG 2.1) followed
-- [ ] Performance optimized (lazy loading, code splitting)
-- [ ] Unit tests written using Jest/React Testing Library
+### Authentication
+- `POST /api/auth/register` - User registration
+- `POST /api/auth/login` - User login
+- `POST /api/auth/logout` - User logout
 
-#### File Structure
-```
-frontend/
-├── src/
-│   ├── components/          # Reusable UI components
-│   ├── pages/              # Page components
-│   ├── hooks/              # Custom React hooks
-│   ├── store/              # Redux store and slices
-│   ├── services/           # API service functions
-│   ├── utils/              # Helper functions
-│   └── styles/             # Global styles
-```
+### Rides
+- `POST /api/rides/offer` - Create ride
+- `GET /api/rides/search` - Search rides
+- `GET /api/rides/my-rides` - User's rides
+- `PUT /api/rides/{id}/update` - Update ride
+- `DELETE /api/rides/{id}/cancel` - Cancel ride
 
-### Backend Contribution Guidelines
+### Bookings
+- `POST /api/rides/{id}/book` - Book ride
+- `GET /api/bookings/my-bookings` - User bookings
+- `GET /api/bookings/my-ride-bookings` - Driver bookings
+- `PUT /api/bookings/{id}/confirm` - Confirm booking
+- `PUT /api/bookings/{id}/cancel` - Cancel booking
 
-#### Development Setup
-```bash
-cd backend
-./mvnw spring-boot:run
-```
+### Ratings
+- `POST /api/ratings` - Create rating
+- `GET /api/ratings/user/{id}` - User ratings
 
-#### Code Standards
-- **Java Style**: Follow Google Java Style Guide
-- **Architecture**: Maintain layered architecture (Controller → Service → Repository)
-- **Documentation**: Use Javadoc for public methods
-- **Testing**: Minimum 80% code coverage
+## 🔒 Security Features
 
-#### Backend Checklist
-- [ ] RESTful API design principles followed
-- [ ] Proper HTTP status codes used
-- [ ] Input validation implemented
-- [ ] Exception handling with custom exceptions
-- [ ] JUnit tests for all service methods
-- [ ] Integration tests for API endpoints
-- [ ] Database migrations using Flyway
-
-#### Project Structure
-```
-backend/
-├── src/main/java/
-│   ├── controller/         # REST controllers
-│   ├── service/           # Business logic
-│   ├── repository/        # Data access layer
-│   ├── model/             # Entity classes
-│   ├── dto/               # Data Transfer Objects
-│   ├── config/            # Configuration classes
-│   └── exception/         # Custom exceptions
-├── src/test/              # Unit and integration tests
-└── src/main/resources/    # Configuration files
-```
-
-### Database Guidelines
-
-#### Schema Changes
-- Create migration scripts in `src/main/resources/db/migration/`
-- Follow naming convention: `V{version}__{description}.sql`
-- Never modify existing migration files
-
-#### Best Practices
-- Use meaningful table and column names
-- Implement proper foreign key constraints
-- Index frequently queried columns
-- Document complex queries
-
-### Testing Guidelines
-
-#### Frontend Testing
-```bash
-# Run tests
-npm test
-
-# Run tests with coverage
-npm run test:coverage
-
-# Run E2E tests
-npm run test:e2e
-```
-
-#### Backend Testing
-```bash
-# Run unit tests
-./mvnw test
-
-# Run integration tests
-./mvnw test -Dspring.profiles.active=integration
-
-# Generate coverage report
-./mvnw jacoco:report
-```
-
-### Pull Request Process
-
-1. **Update your fork**
-   ```bash
-   git fetch upstream
-   git checkout main
-   git merge upstream/main
-   ```
-
-2. **Create meaningful commits**
-   ```bash
-   # Use conventional commit format
-   git commit -m "feat: add ride booking functionality"
-   git commit -m "fix: resolve authentication token expiry issue"
-   git commit -m "docs: update API documentation"
-   ```
-
-3. **Push and create PR**
-   ```bash
-   git push origin feature/your-feature-name
-   # Create pull request on GitHub
-   ```
-
-4. **PR Requirements**
-   - [ ] Descriptive title and detailed description
-   - [ ] Link to related issues
-   - [ ] Screenshots for UI changes
-   - [ ] Tests pass locally
-   - [ ] Code reviewed by at least one team member
-
-### Issue Reporting
-
-When reporting bugs or requesting features:
-
-1. **Search existing issues** first
-2. **Use provided templates**
-3. **Include relevant details**:
-   - Environment (OS, browser, versions)
-   - Steps to reproduce
-   - Expected vs actual behavior
-   - Screenshots/error logs
-
-### Areas for Contribution
-
-#### High Priority
-- 🐛 **Bug Fixes**: Critical issues affecting user experience
-- 🔒 **Security**: Authentication and data protection improvements
-- 📱 **Mobile Optimization**: Enhanced mobile user experience
-- ♿ **Accessibility**: WCAG compliance improvements
-
-#### Medium Priority
-- ✨ **New Features**: Ride scheduling, payment integration
-- 🎨 **UI/UX**: Design system improvements
-- ⚡ **Performance**: Loading time and responsiveness optimization
-- 📊 **Analytics**: User behavior and app performance tracking
-
-#### Low Priority
-- 📖 **Documentation**: Code comments, user guides
-- 🧪 **Testing**: Increased test coverage
-- 🔧 **DevOps**: CI/CD pipeline improvements
-- 🌐 **Internationalization**: Multi-language support
+- JWT token authentication with expiry
+- BCrypt password hashing
+- CORS configuration for cross-origin requests
+- Input validation and SQL injection prevention
+- Protected API endpoints with role-based access
 
 ## 👥 Team
 
-**CDAC Project Team - Batch 2024**
+| Team Member | GitHub Profile |
+|-------------|----------------|
+| **Aman Kumbhalwar** | [@amanrk2801](https://github.com/amanrk2801) |
+| **Bhagirath Manda** | [@89245-BhagiRath-Manda](https://github.com/89245-BhagiRath-Manda) |
+| **Rajesh Kumbhar** | [@89200-Rajesh](https://github.com/89200-Rajesh) |
+| **Om Sirsat** | [@89282-Omsirsat](https://github.com/89282-Omsirsat) |
 
-| Team Member | GitHub |
-|-------------|--------|
-| Aman Kumbhalwar | [@amanrk2801](https://github.com/amanrk2801) |
-| Bhagirath Manda | [@bhagirathm](https://github.com/89245-BhagiRath-Manda) |
-| Rajesh Kumbhar | [@rajeshk](https://github.com/89200-Rajesh) |
-| Om Sirsat | [@omsirsat](https://github.com/89282-Omsirsat) |
-
-.
-## 📄 License
-
-This project is developed for educational purposes as part of the CDAC course curriculum. All rights reserved to the development team and CDAC.
-
-**Academic Use Only**: This project is intended for learning and educational purposes. Commercial use is not permitted without explicit permission.
-
-## 📞 Support
-
-### Getting Help
-
-- 📧 **Email**: carpool.cdac@gmail.com
-- 💬 **Issues**: [GitHub Issues](https://github.com/amanrk2801/carpool/issues)
-- 📖 **Documentation**: [Project Wiki](https://github.com/amanrk2801/carpool/wiki)
-
-### Acknowledgments
-
-- **CDAC (Centre for Development of Advanced Computing)** for providing the learning platform and guidance
-- **Open Source Community** for the excellent tools and frameworks
-- **React & Spring Boot Communities** for comprehensive documentation
-- **All Contributors** who help improve this project
-
----
-
-## 🎯 Project Roadmap
-
-### Phase 1 (Current)
-- [x] Basic user authentication
-- [x] Ride creation and search
-- [x] User profiles and ratings
-- [ ] Real-time messaging
-- [ ] Payment integration
-
-### Phase 2 (Planned)
-- [ ] Mobile application (React Native)
-- [ ] Advanced matching algorithms
-- [ ] Multi-city support
-- [ ] Admin dashboard
-
-### Phase 3 (Future)
-- [ ] AI-powered recommendations
-- [ ] IoT integration for smart vehicles
-- [ ] Blockchain-based verification
-
----
-
-⭐ **If you find this project helpful, please consider starring the repository!**
-
-**Happy Carpooling! 🚗💚**
