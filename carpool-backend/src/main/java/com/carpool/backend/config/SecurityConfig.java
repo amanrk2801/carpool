@@ -90,9 +90,11 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOriginPatterns(Arrays.asList(
             "*",
-            "http://51.20.44.166",
-            "https://51.20.44.166",
-            "https://carpool-eight.vercel.app"
+            "http://3.7.253.254",
+            "https://3.7.253.254",
+            "https://carpool-eight.vercel.app",
+            "https://carpoolconnect.me",
+            "http://carpoolconnect.me"
         ));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
