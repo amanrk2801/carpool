@@ -151,27 +151,7 @@ const RideDetailsModal = ({
               </div>
             </div>
 
-            {/* Driver Information */}
-            {ride.driver && (
-              <div className="bg-gray-50 p-4 rounded-lg">
-                <h3 className="font-semibold mb-3">Driver Information</h3>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="font-medium text-lg">
-                      {ride.driver.firstName} {ride.driver.lastName}
-                    </p>
-                    <UserRatingDisplay user={ride.driver} showDetails={true} />
-                  </div>
-                  {ride.driver.profilePictureUrl && (
-                    <img 
-                      src={ride.driver.profilePictureUrl} 
-                      alt="Driver" 
-                      className="w-12 h-12 rounded-full object-cover"
-                    />
-                  )}
-                </div>
-              </div>
-            )}
+            {/* Driver Information removed as requested */}
 
             {/* Passengers (if any) */}
             {ride.passengers && ride.passengers.length > 0 && (

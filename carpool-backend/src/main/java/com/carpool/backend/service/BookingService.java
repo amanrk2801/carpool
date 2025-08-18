@@ -142,8 +142,11 @@ public class BookingService {
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new ResourceNotFoundException("Booking not found with id: " + bookingId));
 
-        if (!booking.getPassenger().getId().equals(userId)) {
-            throw new UnauthorizedException("You can only cancel your own bookings");
+        boolean isPassenger = booking.getPassenger().getId().equals(userId);
+        boolean isDriver = booking.getRide().getDriver().getId().equals(userId);
+
+        if (!(isPassenger || (isDriver && booking.getStatus() == BookingStatus.PENDING))) {
+            throw new UnauthorizedException("Only the passenger can cancel, or the driver can reject pending bookings.");
         }
 
         if (booking.getStatus().equals(BookingStatus.CANCELLED) || 

@@ -40,11 +40,16 @@ const Dashboard = () => {
   // Fetch user's rides and bookings from API
   useEffect(() => {
     const fetchData = async () => {
-      if (!user) return;
-      
+      // Wait for token to be available before fetching
+      const token = apiService.getAuthToken();
+      if (!user || !token) {
+        setLoading(false);
+        return;
+      }
+
       setLoading(true);
       setError('');
-      
+
       try {
         // Fetch rides offered by user
         const ridesResponse = await apiService.getMyRides();
@@ -72,11 +77,18 @@ const Dashboard = () => {
           console.error('Failed to fetch ride bookings:', rideBookingsResponse.message);
           setRideBookings([]); // Set empty array if fetch fails
         }
-        
+
       } catch (err) {
         console.error('Error fetching dashboard data:', err);
         if (err.message && err.message.includes('authentication')) {
           // Authentication failed, redirect to signin
+          logout();
+          navigate('/signin');
+          return;
+        }
+        // If unauthorized, log out and show message
+        if (error && error.message && error.message.toLowerCase().includes('unauthorized')) {
+          setError('Session expired or unauthorized. Please sign in again.');
           logout();
           navigate('/signin');
           return;
@@ -88,10 +100,22 @@ const Dashboard = () => {
     };
 
     fetchData();
-  }, [user, logout, navigate]);
+  }, [user, logout, navigate, error]);
 
   const handleShowRideDetails = (ride) => {
-    setSelectedRide(ride);
+    // Find passengers for this ride
+    const ridePassengers = Array.isArray(rideBookings)
+      ? rideBookings.filter(booking => 
+          (booking?.rideId === ride.id || booking?.ride?.id === ride.id) && 
+          ['CONFIRMED', 'COMPLETED'].includes(booking?.status)
+        ).map(booking => ({
+          name: booking?.passenger?.name || booking?.passengerName || 'Passenger',
+          seatsBooked: booking?.seatsBooked,
+          phone: booking?.passenger?.phone || booking?.passengerPhone,
+        }))
+      : [];
+
+    setSelectedRide({ ...ride, passengers: ridePassengers });
     setShowRideDetails(true);
   };
 
@@ -347,21 +371,27 @@ const Dashboard = () => {
     }
 
     try {
+      setIsUpdating(true);
       const response = await apiService.cancelBooking(booking.id);
-      
+      console.log('Reject booking response:', response);
       if (response.success) {
-        // Remove the booking from local state or update status to cancelled
         setRideBookings(prevBookings => 
           prevBookings.map(b => 
             b.id === booking.id ? { ...b, status: 'CANCELLED' } : b
           )
         );
+        setError('');
+        alert('Booking rejected successfully.');
       } else {
         setError(response.message || 'Failed to reject booking');
+        alert(response.message || 'Failed to reject booking');
       }
     } catch (err) {
       console.error('Error rejecting booking:', err);
       setError('Failed to reject booking. Please try again.');
+      alert('Failed to reject booking. Please try again.');
+    } finally {
+      setIsUpdating(false);
     }
   };
 
@@ -478,12 +508,29 @@ const Dashboard = () => {
 
   const refreshData = async () => {
     setLoading(true);
+    setError('');
     try {
+      // Fetch rides
       const ridesResponse = await apiService.getMyRides();
       if (ridesResponse.success) {
         setRides(ridesResponse.data || []);
       }
-      setError('');
+
+      // Fetch bookings
+      const bookingsResponse = await apiService.getMyBookings();
+      if (bookingsResponse.success) {
+        setBookings(bookingsResponse.data || []);
+      } else {
+        setBookings([]);
+      }
+
+      // Fetch ride bookings
+      const rideBookingsResponse = await apiService.getMyRideBookings();
+      if (rideBookingsResponse.success) {
+        setRideBookings(rideBookingsResponse.data || []);
+      } else {
+        setRideBookings([]);
+      }
     } catch {
       setError('Failed to refresh data');
     } finally {
@@ -517,7 +564,7 @@ const Dashboard = () => {
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
             <div>
               <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
-                Welcome back, {user.firstName || user.name}!
+                Welcome back, {user?.firstName || user?.name || 'User'}!
               </h1>
               <p className="text-gray-600 mt-1">Manage your rides and bookings</p>
             </div>
@@ -611,16 +658,19 @@ const Dashboard = () => {
                 {/* My Rides Tab */}
                 {activeTab === 'rides' && (
                   <div>
-                    {rides.length > 0 ? (
+                    {Array.isArray(rides) && rides.length > 0 ? (
                       rides.map(ride => {
+                        if (!ride || typeof ride !== 'object') return null;
                         // Find passengers for this ride
-                        const ridePassengers = rideBookings.filter(booking => 
-                          (booking.rideId === ride.id || booking.ride?.id === ride.id) && 
-                          ['CONFIRMED', 'COMPLETED'].includes(booking.status)
-                        );
+                        const ridePassengers = Array.isArray(rideBookings)
+                          ? rideBookings.filter(booking => 
+                              (booking?.rideId === ride.id || booking?.ride?.id === ride.id) && 
+                              ['CONFIRMED', 'COMPLETED'].includes(booking?.status)
+                            )
+                          : [];
 
                         return (
-                          <div key={ride.id} className="mb-6">
+                          <div key={ride.id || Math.random()} className="mb-6">
                             <RideCard
                               ride={ride}
                               onShowDetails={handleShowRideDetails}
@@ -631,38 +681,37 @@ const Dashboard = () => {
                               formatTime={formatTime}
                               getStatusColor={getStatusColor}
                             />
-                            
                             {/* Show passengers for rides with bookings */}
-                            {ridePassengers.length > 0 && (
+                            {Array.isArray(ridePassengers) && ridePassengers.length > 0 && (
                               <div className="mt-3 ml-4 p-4 bg-gray-50 border border-gray-200 rounded-lg">
                                 <h4 className="text-sm font-medium text-gray-900 mb-3">
                                   {ride.status === 'COMPLETED' ? 'Passengers on this ride:' : 'Confirmed passengers:'}
                                 </h4>
                                 <div className="space-y-2">
                                   {ridePassengers.map(booking => (
-                                    <div key={booking.id} className="flex items-center justify-between bg-white p-3 rounded-lg border">
+                                    <div key={booking?.id || Math.random()} className="flex items-center justify-between bg-white p-3 rounded-lg border">
                                       <div className="flex items-center space-x-3">
                                         <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                                          booking.status === 'COMPLETED' ? 'bg-green-100' : 'bg-blue-100'
+                                          booking?.status === 'COMPLETED' ? 'bg-green-100' : 'bg-blue-100'
                                         }`}>
                                           <Users className={`h-4 w-4 ${
-                                            booking.status === 'COMPLETED' ? 'text-green-600' : 'text-blue-600'
+                                            booking?.status === 'COMPLETED' ? 'text-green-600' : 'text-blue-600'
                                           }`} />
                                         </div>
                                         <div>
                                           <p className="text-sm font-medium text-gray-900">
-                                            {booking.passenger?.name || booking.passengerName || 'Passenger'}
+                                            {booking?.passenger?.name || booking?.passengerName || 'Passenger'}
                                           </p>
                                           <p className="text-xs text-gray-500">
-                                            {booking.seatsBooked} seat{booking.seatsBooked > 1 ? 's' : ''} • ₹{booking.totalAmount}
-                                            {booking.passenger?.phone && (
+                                            {booking?.seatsBooked || 0} seat{booking?.seatsBooked > 1 ? 's' : ''} • ₹{booking?.totalAmount || 0}
+                                            {booking?.passenger?.phone && (
                                               <span> • {booking.passenger.phone}</span>
                                             )}
                                           </p>
                                         </div>
                                       </div>
                                       <div className="flex items-center space-x-2">
-                                        {ride.status === 'COMPLETED' && booking.status === 'COMPLETED' ? (
+                                        {ride.status === 'COMPLETED' && booking?.status === 'COMPLETED' ? (
                                           <button
                                             onClick={() => handleRatePassenger(booking)}
                                             className="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-xs font-medium hover:bg-yellow-200 transition-colors flex items-center space-x-1"
@@ -672,11 +721,11 @@ const Dashboard = () => {
                                           </button>
                                         ) : (
                                           <span className={`px-2 py-1 text-xs rounded-full ${
-                                            booking.status === 'CONFIRMED' 
+                                            booking?.status === 'CONFIRMED' 
                                               ? 'bg-green-100 text-green-800' 
                                               : 'bg-blue-100 text-blue-800'
                                           }`}>
-                                            {booking.status}
+                                            {booking?.status || 'Unknown'}
                                           </span>
                                         )}
                                       </div>
@@ -685,9 +734,8 @@ const Dashboard = () => {
                                 </div>
                               </div>
                             )}
-
                             {/* Show message when no passengers booked */}
-                            {ride.status === 'ACTIVE' && ridePassengers.length === 0 && (
+                            {ride.status === 'ACTIVE' && (!Array.isArray(ridePassengers) || ridePassengers.length === 0) && (
                               <div className="mt-3 ml-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
                                 <p className="text-sm text-blue-600 text-center">
                                   No passengers have booked this ride yet
@@ -709,19 +757,21 @@ const Dashboard = () => {
                 {/* My Bookings Tab */}
                 {activeTab === 'bookings' && (
                   <div>
-                    {bookings.length > 0 ? (
+                    {Array.isArray(bookings) && bookings.length > 0 ? (
                       bookings.map(booking => (
-                        <BookingCard
-                          key={booking.id}
-                          booking={booking}
-                          onViewBooking={handleViewBooking}
-                          onCancelBooking={handleCancelBooking}
-                          onContactDriver={handleContactDriver}
-                          onRateDriver={handleRateDriver}
-                          getStatusColor={getStatusColor}
-                          formatDate={formatDate}
-                          formatTime={formatTime}
-                        />
+                        booking && typeof booking === 'object' ? (
+                          <BookingCard
+                            key={booking.id || Math.random()}
+                            booking={booking}
+                            onViewBooking={handleViewBooking}
+                            onCancelBooking={handleCancelBooking}
+                            onContactDriver={handleContactDriver}
+                            onRateDriver={handleRateDriver}
+                            getStatusColor={getStatusColor}
+                            formatDate={formatDate}
+                            formatTime={formatTime}
+                          />
+                        ) : null
                       ))
                     ) : (
                       <EmptyState 
@@ -735,21 +785,23 @@ const Dashboard = () => {
                 {/* Ride Requests Tab */}
                 {activeTab === 'ride-requests' && (
                   <div>
-                    {rideBookings.length > 0 ? (
+                    {Array.isArray(rideBookings) && rideBookings.length > 0 ? (
                       rideBookings.map(booking => (
-                        <BookingCard
-                          key={booking.id}
-                          booking={booking}
-                          onViewBooking={handleViewBooking}
-                          onConfirmBooking={handleConfirmBooking}
-                          onRejectBooking={handleRejectBooking}
-                          onContactPassenger={handleContactPassenger}
-                          onRatePassenger={handleRatePassenger}
-                          getStatusColor={getStatusColor}
-                          formatDate={formatDate}
-                          formatTime={formatTime}
-                          isDriverView={true} // Flag to show driver-specific actions
-                        />
+                        booking && typeof booking === 'object' ? (
+                          <BookingCard
+                            key={booking.id || Math.random()}
+                            booking={booking}
+                            onViewBooking={handleViewBooking}
+                            onConfirmBooking={handleConfirmBooking}
+                            onRejectBooking={handleRejectBooking}
+                            onContactPassenger={handleContactPassenger}
+                            onRatePassenger={handleRatePassenger}
+                            getStatusColor={getStatusColor}
+                            formatDate={formatDate}
+                            formatTime={formatTime}
+                            isDriverView={true} // Flag to show driver-specific actions
+                          />
+                        ) : null
                       ))
                     ) : (
                       <div className="text-center py-12">
