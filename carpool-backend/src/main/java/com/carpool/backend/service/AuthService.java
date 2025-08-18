@@ -48,7 +48,7 @@ public class AuthService {
     @Autowired
     private TwilioWhatsAppService twilioWhatsAppService;
 
-    public UserResponse register(RegisterRequest request) {
+    public LoginResponse register(RegisterRequest request) {
         // Check if user already exists
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new UserAlreadyExistsException("Email already registered");
@@ -86,7 +86,18 @@ public class AuthService {
             System.err.println("Failed to send welcome WhatsApp message: " + e.getMessage());
         }
 
-        return mapToUserResponse(savedUser);
+    // Generate tokens for the new user
+    UserDetails userDetails = userDetailsService.loadUserByUsername(savedUser.getEmail());
+    Map<String, Object> extraClaims = new HashMap<>();
+    extraClaims.put("userId", savedUser.getId());
+    extraClaims.put("isDriver", savedUser.getIsDriver());
+    extraClaims.put("isVerified", savedUser.getIsVerified());
+
+    String token = jwtTokenUtil.generateToken(savedUser.getEmail(), extraClaims);
+    String refreshToken = jwtTokenUtil.generateRefreshToken(savedUser.getEmail());
+
+    UserResponse userResponse = mapToUserResponse(savedUser);
+    return new LoginResponse(userResponse, token, refreshToken);
     }
 
     public LoginResponse login(LoginRequest request) {

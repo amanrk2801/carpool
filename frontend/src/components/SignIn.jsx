@@ -72,8 +72,12 @@ function SignIn() {
         console.log('Login successful:', result.data);
         navigate('/dashboard');
       } else {
+        let errorMsg = result.error || 'Login failed. Please check your credentials.';
+        if (errorMsg.toLowerCase().includes('invalid email or password')) {
+          errorMsg = 'Invalid email or password. Please check your credentials and try again.';
+        }
         setErrors({ 
-          submit: result.error || 'Login failed. Please check your credentials.' 
+          submit: errorMsg
         });
       }
     } catch (error) {

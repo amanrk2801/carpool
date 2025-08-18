@@ -1,7 +1,7 @@
 import React from 'react';
 import { Star, User } from 'lucide-react';
 
-const UserRatingDisplay = ({ user, showDetails = false }) => {
+const UserRatingDisplay = ({ user, showDetails = false, hideIfOfferingRide = false }) => {
   const renderStars = (rating) => {
     const fullStars = Math.floor(rating);
     const hasHalfStar = rating % 1 !== 0;
@@ -37,6 +37,7 @@ const UserRatingDisplay = ({ user, showDetails = false }) => {
     return Number(rating).toFixed(1);
   };
 
+  if (hideIfOfferingRide) return null;
   return (
     <div className={`flex items-center ${showDetails ? 'flex-col sm:flex-row' : ''} gap-2`}>
       {/* Rating Stars */}

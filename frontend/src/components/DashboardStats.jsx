@@ -39,18 +39,6 @@ const DashboardStats = ({ user, ridesCount, bookingsCount }) => {
           </div>
         </div>
       </div>
-
-      <div className="bg-white rounded-lg shadow p-6">
-        <div className="flex items-center">
-          <div className="flex-shrink-0">
-            <Calendar className="h-8 w-8 text-purple-600" />
-          </div>
-          <div className="ml-4">
-            <p className="text-sm font-medium text-gray-500">Total Rides</p>
-            <p className="text-2xl font-bold text-gray-900">{user.totalRides || 0}</p>
-          </div>
-        </div>
-      </div>
     </div>
   );
 };

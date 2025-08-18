@@ -21,11 +21,11 @@ public class AuthController {
     private AuthService authService;
 
     @PostMapping("/register")
-    public ResponseEntity<ApiResponse<UserResponse>> register(@Valid @RequestBody RegisterRequest request) {
+    public ResponseEntity<ApiResponse<LoginResponse>> register(@Valid @RequestBody RegisterRequest request) {
         try {
-            UserResponse userResponse = authService.register(request);
+            LoginResponse loginResponse = authService.register(request);
             return ResponseEntity.status(HttpStatus.CREATED)
-                    .body(ApiResponse.success("Account created successfully", userResponse));
+                    .body(ApiResponse.success("Account created successfully", loginResponse));
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(ApiResponse.error("Registration failed", e.getMessage()));

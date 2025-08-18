@@ -59,7 +59,7 @@ public class RatingService {
             throw new UnauthorizedException("You can only rate users who were part of this ride");
         }
 
-        if (ratingRepository.existsByRideIdAndRaterId(request.getRideId(), raterId)) {
+        if (ratingRepository.existsByRideIdAndRaterIdAndRateeId(request.getRideId(), raterId, request.getRateeId())) {
             throw new IllegalArgumentException("You have already rated this user for this ride");
         }
 

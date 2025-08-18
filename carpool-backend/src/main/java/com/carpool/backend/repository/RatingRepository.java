@@ -13,7 +13,7 @@ import com.carpool.backend.entity.Rating;
 @Repository
 public interface RatingRepository extends JpaRepository<Rating, Long> {
 
-	boolean existsByRideIdAndRaterId(Long rideId, Long raterId);
+	boolean existsByRideIdAndRaterIdAndRateeId(Long rideId, Long raterId, Long rateeId);
 	
 	@Query("SELECT AVG(r.rating) FROM Rating r WHERE r.ratee.id = :userId")
     BigDecimal findAverageRatingByUserId(@Param("userId") Long userId);

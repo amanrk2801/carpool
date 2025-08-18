@@ -1,14 +1,14 @@
 // API Configuration and Service Layer
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://51.20.44.166:8080/api';
 
 class ApiService {
   constructor() {
     this.baseURL = API_BASE_URL;
   }
 
-  // Get auth token from localStorage
+  // Get auth token from localStorage or sessionStorage
   getAuthToken() {
-    const userData = localStorage.getItem('user');
+    let userData = localStorage.getItem('user') || sessionStorage.getItem('user');
     if (userData) {
       try {
         const user = JSON.parse(userData);
@@ -81,6 +81,20 @@ class ApiService {
     const url = `${this.baseURL}${endpoint}`;
     const token = this.getAuthToken();
 
+    // If this is a protected endpoint and no token, redirect immediately
+    const isAuthEndpoint = endpoint.includes('/auth/');
+    if (!isAuthEndpoint && !token) {
+      localStorage.removeItem('user');
+      sessionStorage.removeItem('user');
+      window.location.href = '/signin';
+      return {
+        success: false,
+        data: null,
+        message: 'No authentication token found',
+        error: 'No authentication token found'
+      };
+    }
+
     const defaultHeaders = {
       'Content-Type': 'application/json',
     };
@@ -99,16 +113,16 @@ class ApiService {
 
     try {
       const response = await fetch(url, config);
-      
+
       // If token expired and we haven't retried yet, try to refresh
-      if (response.status === 401 && retryCount === 0 && !endpoint.includes('/auth/')) {
+      if (response.status === 401 && retryCount === 0 && !isAuthEndpoint) {
         const refreshResult = await this.tryRefreshToken();
         if (refreshResult) {
           // Retry the original request with new token
           return this.apiCall(endpoint, options, 1);
         }
       }
-      
+
       // Handle empty responses
       let data;
       const contentType = response.headers.get('content-type');
@@ -119,16 +133,17 @@ class ApiService {
       }
 
       if (!response.ok) {
-        if (response.status === 401) {
-          // Token might be expired, redirect to login
+        if (response.status === 401 && !['/auth/login', '/auth/register'].includes(endpoint)) {
+          // Token might be expired, redirect to login (but NOT for login/register endpoints)
           localStorage.removeItem('user');
+          sessionStorage.removeItem('user');
           window.location.href = '/signin';
         }
-        
+
         // For error responses, return the error data instead of throwing
         console.error(`API call failed for ${endpoint} with status ${response.status}:`, data);
         console.error('Error data structure:', JSON.stringify(data, null, 2));
-        
+
         // Extract detailed error message from various possible fields
         let errorMessage = 'An error occurred';
         if (data.data && typeof data.data === 'string') {
@@ -144,7 +159,7 @@ class ApiService {
         } else {
           errorMessage = data.message || `API call failed with status ${response.status}`;
         }
-        
+
         return {
           success: false,
           data: null,
@@ -164,11 +179,18 @@ class ApiService {
         };
       }
     } catch (error) {
+      // Network or unexpected error: clear user and redirect if not auth endpoint
+      if (!isAuthEndpoint) {
+        localStorage.removeItem('user');
+        sessionStorage.removeItem('user');
+        window.location.href = '/signin';
+      }
       console.error(`API call failed for ${endpoint}:`, error);
       return {
         success: false,
         data: null,
-        message: error.message || 'An error occurred'
+        message: error.message || 'An error occurred',
+        error: error.message || 'An error occurred'
       };
     }
   }
