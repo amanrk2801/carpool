@@ -2,6 +2,8 @@ import { Car, Shield, Phone, Mail } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 function Footer() {
+  const currentYear = new Date().getFullYear();
+
   return (
     <footer className="bg-blue-900 text-white">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
@@ -50,7 +52,7 @@ function Footer() {
         <div className="border-t border-blue-800 pt-6 sm:pt-8 mt-6 sm:mt-8">
           <div className="flex flex-col md:flex-row justify-between items-center text-center md:text-left">
             <p className="text-blue-300 text-xs sm:text-sm">
-              © 2024 CarpoolConnect. All rights reserved.
+              © {currentYear} CarpoolConnect. All rights reserved.
             </p>
             <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-6 mt-4 md:mt-0">
               <a href="#" className="text-blue-300 hover:text-green-400 text-xs sm:text-sm transition-colors">Privacy Policy</a>

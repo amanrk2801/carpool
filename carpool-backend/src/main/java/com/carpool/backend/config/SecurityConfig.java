@@ -92,7 +92,6 @@ public class SecurityConfig {
             "*",
             "http://3.7.253.254",
             "https://3.7.253.254",
-            "https://carpool-eight.vercel.app",
             "https://carpoolconnect.me",
             "http://carpoolconnect.me"
         ));
